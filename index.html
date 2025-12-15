@@ -1,12 +1,522 @@
-<!DOCTYPE html><html lang="en" data-beasties-container><head>
-  <meta charset="utf-8">
-  <title>Portfolio</title>
-  <base href="/nikeshwalia.github.io/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="stylesheet" href="styles-5INURTSO.css"></head>
-<body><!--nghm-->
-  <app-root ng-version="21.0.5" ngh="0" ng-server-context="ssg"><div class="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center"><h1 class="text-4xl font-bold mb-4">Nikesh Walia</h1><p class="text-lg text-gray-300 mb-6"> Software Developer • Mobile &amp; Web • QA Engineer </p><div class="flex gap-4"><a href="https://github.com/" target="_blank" class="px-6 py-2 bg-white text-black rounded-lg hover:bg-gray-200"> GitHub </a><a href="https://linkedin.com/" target="_blank" class="px-6 py-2 border border-white rounded-lg hover:bg-white hover:text-black"> LinkedIn </a></div></div></app-root>
-<script src="main-JP46GLEX.js" type="module"></script>
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikesh Walia | Software Developer & QA Engineer</title>
+    <meta name="description" content="Professional portfolio for Nikesh Walia, a Full-Stack Developer & QA Engineer specializing in automation and mobile apps.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              primary: {
+                50: '#eef2ff',
+                100: '#e0e7ff',
+                500: '#6366f1',
+                600: '#4f46e5',
+                700: '#4338ca',
+              }
+            }
+          }
+        }
+      }
+    </script>
 
-<script id="ng-state" type="application/json">{"__nghData__":[{}]}</script></body></html>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Driver.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+<script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "react": "https://esm.sh/react@^19.2.3",
+    "framer-motion": "https://esm.sh/framer-motion@^12.23.26",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-slate-900 dark:text-gray-100 transition-colors duration-300">
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0, 0)">
+                    <i data-lucide="terminal" class="h-8 w-8 text-primary-600 dark:text-primary-500"></i>
+                    <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">Nikesh.dev</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#about" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">About</a>
+                        <a href="#skills" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Skills</a>
+                        <a href="#projects" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Projects</a>
+                        <a href="#experience" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Experience</a>
+                        <a href="#contact" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Contact</a>
+                        
+                        <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors focus:outline-none" aria-label="Toggle Theme">
+                            <i data-lucide="moon" class="h-5 w-5 text-gray-600 dark:hidden"></i>
+                            <i data-lucide="sun" class="h-5 w-5 text-yellow-400 hidden dark:block"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center gap-2">
+                    <button id="theme-toggle-mobile" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                        <i data-lucide="moon" class="h-5 w-5 text-gray-600 dark:hidden"></i>
+                        <i data-lucide="sun" class="h-5 w-5 text-yellow-400 hidden dark:block"></i>
+                    </button>
+                    <button id="mobile-menu-btn" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-primary-600 focus:outline-none">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">About</a>
+                <a href="#skills" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Skills</a>
+                <a href="#projects" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Projects</a>
+                <a href="#experience" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Experience</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex items-center justify-center relative bg-gradient-to-b from-gray-50 to-white dark:from-slate-900 dark:to-slate-800 pt-16 transition-colors">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center z-10 reveal">
+                
+                <div class="mb-8 transform transition-transform duration-500 hover:scale-105">
+                    <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white dark:border-slate-700 shadow-xl overflow-hidden bg-slate-200">
+                        <div class="w-full h-full flex items-center justify-center bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-4xl font-bold">
+                            NW
+                        </div>
+                    </div>
+                </div>
+
+                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-4">
+                    Nikesh Walia
+                </h1>
+
+                <h2 class="text-xl md:text-2xl text-primary-600 dark:text-primary-400 font-semibold mb-6">
+                    QA Engineer & Mobile / Software Developer
+                </h2>
+
+                <p class="text-gray-600 dark:text-gray-300 max-w-2xl mb-10 text-lg leading-relaxed">
+                    Versatile QA Engineer & Developer specializing in automation, mobile apps, and data quality.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                    <a href="#" class="flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-all shadow-lg hover:shadow-primary-500/30">
+                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                        View Resume
+                    </a>
+                    <a href="#contact" class="flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-200 dark:border-slate-600 font-semibold hover:bg-gray-50 dark:hover:bg-slate-600 transition-all shadow-sm">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                        Contact Me
+                    </a>
+                </div>
+
+                <div class="flex gap-6 mt-12">
+                    <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <i data-lucide="github" class="w-6 h-6"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-600 transition-colors">
+                        <i data-lucide="linkedin" class="w-6 h-6"></i>
+                    </a>
+                    <a href="mailto:nikeshwalia@gmail.com" class="text-gray-400 hover:text-red-500 transition-colors">
+                        <i data-lucide="mail" class="w-6 h-6"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-gray-400 animate-bounce">
+                <i data-lucide="arrow-down" class="w-6 h-6"></i>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 px-4 md:px-8 lg:px-16 bg-white dark:bg-slate-800 transition-colors">
+            <div class="max-w-4xl mx-auto reveal">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
+                    About Me
+                </h2>
+                <div class="prose prose-lg dark:prose-invert mx-auto text-gray-600 dark:text-gray-300">
+                    <p class="mb-6 leading-relaxed">
+                        I am a versatile <strong>QA Engineer</strong> and <strong>Mobile/Software Developer</strong> with a hands-on approach to building and breaking software. 
+                        Currently, I work at <strong>Techsapphire Solutions</strong>, where I bridge the gap between development and quality assurance.
+                    </p>
+                    <p class="mb-6 leading-relaxed">
+                        My expertise lies in <strong>manual and automation testing</strong>, specifically with Selenium WebDriver and SQL validation. 
+                        On the development side, I have a strong background in building mobile applications using <strong>Flutter, React Native, and .NET MAUI</strong>.
+                        I pride myself on bringing a developer’s precision to quality assurance, designing effective test cases, and debugging complex issues to ensure seamless product releases.
+                    </p>
+                    <p class="leading-relaxed">
+                        I hold a <strong>Bachelor of Technology in Computer Science Engineering</strong> from Chandigarh Engineering College (Grade 8.10/10).
+                        I am adept at collaborating across teams and utilizing tools like Python, SQL, and Docker to drive high-quality engineering outcomes.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-20 px-4 md:px-8 lg:px-16 bg-gray-50 dark:bg-slate-900 transition-colors">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 dark:text-white reveal">
+                    Technical Skills
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <!-- Testing -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-slate-700 hover:shadow-lg transition-shadow reveal">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-lg text-primary-600 dark:text-primary-400">
+                                <i data-lucide="test-tube-2" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Testing & Automation</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">Selenium WebDriver</span><span class="text-sm text-gray-500 dark:text-gray-400">90%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 90%"></div></div></div>
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">Manual Testing</span><span class="text-sm text-gray-500 dark:text-gray-400">95%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 95%"></div></div></div>
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">Automation Testing</span><span class="text-sm text-gray-500 dark:text-gray-400">85%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 85%"></div></div></div>
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">Bug Tracking</span><span class="text-sm text-gray-500 dark:text-gray-400">85%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 85%"></div></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Programming -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-slate-700 hover:shadow-lg transition-shadow reveal">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-lg text-primary-600 dark:text-primary-400">
+                                <i data-lucide="code-2" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Programming & Scripting</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">Python</span><span class="text-sm text-gray-500 dark:text-gray-400">85%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 85%"></div></div></div>
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">Dart (Flutter)</span><span class="text-sm text-gray-500 dark:text-gray-400">80%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 80%"></div></div></div>
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">JavaScript</span><span class="text-sm text-gray-500 dark:text-gray-400">80%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 80%"></div></div></div>
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">C# (.NET MAUI)</span><span class="text-sm text-gray-500 dark:text-gray-400">70%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 70%"></div></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-slate-700 hover:shadow-lg transition-shadow reveal">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-lg text-primary-600 dark:text-primary-400">
+                                <i data-lucide="smartphone" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Mobile Development</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">Flutter</span><span class="text-sm text-gray-500 dark:text-gray-400">85%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 85%"></div></div></div>
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">React Native</span><span class="text-sm text-gray-500 dark:text-gray-400">80%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 80%"></div></div></div>
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">JSON SDK Integration</span><span class="text-sm text-gray-500 dark:text-gray-400">85%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 85%"></div></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Databases -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-slate-700 hover:shadow-lg transition-shadow reveal">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-lg text-primary-600 dark:text-primary-400">
+                                <i data-lucide="database" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Databases</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">SQL Server</span><span class="text-sm text-gray-500 dark:text-gray-400">80%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 80%"></div></div></div>
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">MySQL / PostgreSQL</span><span class="text-sm text-gray-500 dark:text-gray-400">80%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 80%"></div></div></div>
+                            <div><div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">Query Optimization</span><span class="text-sm text-gray-500 dark:text-gray-400">70%</span></div><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"><div class="bg-primary-600 h-2.5 rounded-full" style="width: 70%"></div></div></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-20 px-4 md:px-8 lg:px-16 bg-white dark:bg-slate-800 transition-colors">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 dark:text-white reveal">
+                    Featured Projects
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Project 1 -->
+                    <div class="project-card group bg-gray-50 dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer border border-gray-100 dark:border-slate-700 reveal" 
+                         data-id="1">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&q=80&w=800" alt="Automation Suite" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">Order Meal – Automation Suite</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">Automated live-link validation for 500+ restaurants using Selenium & Python.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">Selenium</span>
+                                <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">Python</span>
+                                <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">Excel</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="project-card group bg-gray-50 dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer border border-gray-100 dark:border-slate-700 reveal"
+                         data-id="2">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=800" alt="Printing Apps" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">Printing Apps Solutions</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">Cross-platform receipt-printing solutions for Android POS systems using Flutter & React Native.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">Flutter</span>
+                                <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">React Native</span>
+                                <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">SDKs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="project-card group bg-gray-50 dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer border border-gray-100 dark:border-slate-700 reveal"
+                         data-id="3">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1625246333195-58f2167181e3?auto=format&fit=crop&q=80&w=800" alt="CropCraft" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">CropCraft – ML Recommendation</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">Machine-learning model suggesting optimal crops via Flask API (≈ 85% accuracy).</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">Python</span>
+                                <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">TensorFlow</span>
+                                <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">Flask</span>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- Project 4 -->
+                     <div class="project-card group bg-gray-50 dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer border border-gray-100 dark:border-slate-700 reveal"
+                     data-id="4">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1587578932405-7c740a76a424?auto=format&fit=crop&q=80&w=800" alt="Face Mask Detector" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">Face Mask Detector</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">Real-time face-mask detection system with live web deployment (≈ 87% accuracy).</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">OpenCV</span>
+                            <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">TensorFlow</span>
+                            <span class="px-2 py-1 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs rounded-md">Vision</span>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-20 px-4 md:px-8 lg:px-16 bg-gray-50 dark:bg-slate-900 transition-colors">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 dark:text-white reveal">
+                    Experience & Education
+                </h2>
+
+                <div class="relative border-l-2 border-gray-200 dark:border-slate-700 ml-3 md:ml-6 space-y-12">
+                    
+                    <div class="relative pl-8 md:pl-12 reveal">
+                        <span class="absolute -left-[9px] top-0 flex items-center justify-center w-6 h-6 rounded-full ring-4 ring-white dark:ring-slate-900 bg-primary-600">
+                            <i data-lucide="briefcase" class="w-3 h-3 text-white"></i>
+                        </span>
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">QA Engineer / Mobile Developer</h3>
+                            <span class="text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-3 py-1 rounded-full w-fit mt-2 sm:mt-0">Dec 2024 – Present</span>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Techsapphire Solutions, Panchkula</h4>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">Designing and executing manual/automated test cases across web and mobile. Built Selenium WebDriver automation for 500+ restaurant links, reducing manual testing by 70%. Developing receipt-printing apps using Flutter and React Native.</p>
+                    </div>
+
+                    <div class="relative pl-8 md:pl-12 reveal">
+                        <span class="absolute -left-[9px] top-0 flex items-center justify-center w-6 h-6 rounded-full ring-4 ring-white dark:ring-slate-900 bg-primary-600">
+                            <i data-lucide="briefcase" class="w-3 h-3 text-white"></i>
+                        </span>
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Data Science Intern</h3>
+                            <span class="text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-3 py-1 rounded-full w-fit mt-2 sm:mt-0">Jan 2024 – Jun 2024</span>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Hoping Minds, Mohali</h4>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">Assisted in building predictive data models using Python and Pandas (improving accuracy by ~30%). Automated data-cleaning workflows and gained experience in data analysis and structured reporting.</p>
+                    </div>
+
+                    <div class="relative pl-8 md:pl-12 reveal">
+                        <span class="absolute -left-[9px] top-0 flex items-center justify-center w-6 h-6 rounded-full ring-4 ring-white dark:ring-slate-900 bg-emerald-500">
+                            <i data-lucide="graduation-cap" class="w-3 h-3 text-white"></i>
+                        </span>
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">B.Tech in Computer Science Engineering</h3>
+                            <span class="text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-3 py-1 rounded-full w-fit mt-2 sm:mt-0">2020 - 2024</span>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Chandigarh Engineering College</h4>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">Grade: 8.10/10. Strong background in Mobile Application development and Computer Science fundamentals.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 px-4 md:px-8 lg:px-16 bg-white dark:bg-slate-800 transition-colors">
+            <div class="max-w-6xl mx-auto reveal">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 dark:text-white">
+                    Get In Touch
+                </h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Info Side -->
+                    <div class="space-y-8">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Contact Information</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-lg">I am open to new opportunities in QA and Software Development.</p>
+                        
+                        <div class="space-y-6">
+                            <a href="mailto:nikeshwalia@gmail.com" class="flex items-center gap-4 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors group">
+                                <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-full group-hover:bg-primary-100 dark:group-hover:bg-primary-900/30 transition-colors">
+                                    <i data-lucide="mail" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-lg">nikeshwalia@gmail.com</span>
+                            </a>
+
+                            <a href="tel:+916239677566" class="flex items-center gap-4 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors group">
+                                <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-full group-hover:bg-primary-100 dark:group-hover:bg-primary-900/30 transition-colors">
+                                    <i data-lucide="phone" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-lg">+91-62396 77566</span>
+                            </a>
+                            
+                            <a href="https://linkedin.com/in/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors group">
+                                <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-full group-hover:bg-primary-100 dark:group-hover:bg-primary-900/30 transition-colors">
+                                    <i data-lucide="linkedin" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-lg">LinkedIn Profile</span>
+                            </a>
+
+                            <div class="flex items-center gap-4 text-gray-600 dark:text-gray-300">
+                                <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-full">
+                                    <i data-lucide="map-pin" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-lg">India</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Side -->
+                    <form id="contact-form" class="bg-gray-50 dark:bg-slate-900 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700">
+                        <div class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                                <input type="text" id="name" required class="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all" placeholder="Your Name">
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                                <input type="email" id="email" required class="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all" placeholder="name@example.com">
+                            </div>
+                            
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message</label>
+                                <textarea id="message" required rows="4" class="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-none" placeholder="Hi Nikesh, I saw your portfolio and..."></textarea>
+                            </div>
+
+                            <button type="submit" id="submit-btn" class="w-full py-3 px-6 rounded-lg text-white font-semibold flex items-center justify-center gap-2 transition-all bg-primary-600 hover:bg-primary-700">
+                                <span>Send Message</span>
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 py-12 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+            <div class="flex space-x-6 mb-6">
+                <a href="https://github.com/" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    <i data-lucide="github" class="w-6 h-6"></i>
+                    <span class="sr-only">GitHub</span>
+                </a>
+                <a href="https://linkedin.com/in/" class="text-gray-400 hover:text-blue-600 transition-colors">
+                    <i data-lucide="linkedin" class="w-6 h-6"></i>
+                    <span class="sr-only">LinkedIn</span>
+                </a>
+                <a href="mailto:nikeshwalia@gmail.com" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                    <span class="sr-only">Email</span>
+                </a>
+            </div>
+            
+            <p class="text-gray-500 dark:text-gray-400 text-sm flex items-center gap-1">
+                © <span id="year"></span> Nikesh Walia. Made with <i data-lucide="heart" class="w-3 h-3 text-red-500 fill-current"></i>.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Project Modal -->
+    <div id="modal-overlay" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity opacity-0">
+        <div id="modal-content" class="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform scale-90 transition-transform">
+            <div class="relative">
+                <button id="modal-close" class="absolute top-4 right-4 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors z-10">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+                <img id="modal-image" src="" alt="" class="w-full h-64 object-cover">
+            </div>
+            
+            <div class="p-8">
+                <h3 id="modal-title" class="text-2xl font-bold mb-4 text-gray-900 dark:text-white"></h3>
+                <p id="modal-desc" class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed"></p>
+
+                <div class="mb-8">
+                    <h4 class="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Technologies</h4>
+                    <div id="modal-tech" class="flex flex-wrap gap-2"></div>
+                </div>
+
+                <div class="flex gap-4 pt-4 border-t border-gray-100 dark:border-slate-800">
+                    <a href="#" id="modal-github" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:opacity-90 transition-opacity font-medium hidden">
+                        <i data-lucide="github" class="w-4 h-4"></i>
+                        View Code
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.dark ::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Reveal on Scroll Animation */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Modal Transitions */
+#modal-overlay.open {
+    display: flex;
+    opacity: 1;
+}
+
+#modal-overlay.open #modal-content {
+    transform: scale(1);
+}
+
+/* Driver JS Customization for Dark Mode */
+.dark .driver-popover {
+    background-color: #1e293b;
+    color: #fff;
+}
+.dark .driver-popover-title {
+    color: #fff;
+}
+.dark .driver-popover-description {
+    color: #cbd5e1;
+}
