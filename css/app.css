@@ -92,7 +92,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* Follows the hero directly, so it needs no divider and less air above it —
    the hero already carries its own generous bottom padding. A slim band gets
    slim padding on both edges, not just the top. */
-.section--tight { border-top: 0; padding-block: var(--s-6) var(--s-16); }
+.section--tight { border-top: 0; padding-block: var(--s-5) var(--s-12); }
 .section-head { margin-bottom: var(--s-12); }
 
 .h-section {
@@ -335,7 +335,7 @@ kbd {
 .hero {
   position: relative;
   isolation: isolate;
-  padding-block: clamp(72px, 9vw, 128px) clamp(56px, 6vw, 96px);
+  padding-block: clamp(64px, 7vw, 104px) clamp(48px, 5vw, 72px);
   overflow: hidden;
 }
 
@@ -759,6 +759,9 @@ kbd {
   border-top: 1px solid var(--line);
 }
 .role:first-child { border-top: 0; padding-top: 0; }
+/* The last role's own bottom padding stacks on top of the section padding,
+   adding ~24px to an already-large seam. The section owns that space. */
+.role:last-child { padding-bottom: 0; }
 .role-when { font-family: var(--font-mono); font-size: var(--t-mono); color: var(--text-3); }
 .role-when .now { display: inline-flex; align-items: center; gap: var(--s-2); margin-top: var(--s-3); color: var(--pass); }
 .role h3 { font-size: var(--t-md); font-weight: 600; }
