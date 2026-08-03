@@ -1,675 +1,711 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Nikesh Walia — QA Engineer & Automation Tester. Selenium, SQL, Python. 30+ critical defects intercepted, 70% manual effort eliminated.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Nikesh Walia — QA Engineer, test automation &amp; SQL validation</title>
+<meta name="description" content="QA Engineer at Techsapphire Solutions. I build Selenium and SQL automation that catches defects before release — 30+ critical defects intercepted pre-release, 70% of manual QA effort removed.">
 <meta name="author" content="Nikesh Walia">
-<title>Nikesh Walia | QA Engineer & Automation Tester</title>
+<link rel="canonical" href="https://nikeshwalia.github.io/">
 
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#f6f6f7">
 
-<!-- Stylesheet -->
-<link rel="stylesheet" href="style.css">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Nikesh Walia">
+<meta property="og:title" content="Nikesh Walia — QA Engineer">
+<meta property="og:description" content="I build Selenium and SQL automation that finds failure before users do. 30+ critical defects caught pre-release, 70% of manual QA effort removed.">
+<meta property="og:url" content="https://nikeshwalia.github.io/">
+<meta property="og:image" content="https://nikeshwalia.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nikesh Walia — QA Engineer. Finding failure before your users do.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nikesh Walia — QA Engineer">
+<meta name="twitter:description" content="I build Selenium and SQL automation that finds failure before users do.">
+<meta name="twitter:image" content="https://nikeshwalia.github.io/og.png">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d0d0f'/%3E%3Ctext x='16' y='21.5' font-family='ui-monospace,monospace' font-size='13' font-weight='700' fill='%23fff' text-anchor='middle'%3ENW%3C/text%3E%3C/svg%3E">
+
+<!-- Fonts are same-origin. The two faces above the fold are preloaded; the
+     rest arrive with the stylesheet. No third-party origin in the critical path. -->
+<link rel="preload" href="fonts/InterTight-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/JetBrainsMono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/app.css">
+
+<script>
+  // Resolve the theme before first paint so there is never a flash of the
+  // wrong palette. Deliberately inline and blocking — it is ~20 lines.
+  (function () {
+    try {
+      var p = localStorage.getItem('theme-preference') || 'system';
+      var dark = p === 'dark' || (p === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    } catch (e) {}
+  })();
+</script>
+
+<noscript><style>[data-reveal]{opacity:1!important;transform:none!important}</style></noscript>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Nikesh Walia",
+  "jobTitle": "Quality Assurance Engineer",
+  "email": "mailto:nikeshwalia@gmail.com",
+  "telephone": "+91-6239677566",
+  "url": "https://nikeshwalia.github.io/",
+  "image": "https://nikeshwalia.github.io/og.png",
+  "sameAs": ["https://www.linkedin.com/in/nikesh-walia/"],
+  "address": { "@type": "PostalAddress", "addressLocality": "Panchkula", "addressCountry": "IN" },
+  "worksFor": { "@type": "Organization", "name": "Techsapphire Solutions" },
+  "alumniOf": { "@type": "CollegeOrUniversity", "name": "Chandigarh Engineering College" },
+  "knowsAbout": ["Test automation", "Selenium WebDriver", "SQL validation", "Regression testing", "Python", "API testing"]
+}
+</script>
 </head>
+
 <body>
 
-<!-- ─── CUSTOM CURSOR ────────────────────────────────────── -->
-<div class="cur-ring" id="cRing"></div>
-<div class="cur-dot"  id="cDot"></div>
+<a href="#main" class="skip">Skip to content</a>
 
-<!-- ─── PRELOADER ───────────────────────────────────────── -->
-<div id="preloader">
-  <div class="pre-word">Portfolio</div>
-  <div class="pre-name">Nikesh Walia</div>
-  <div class="pre-line"></div>
-</div>
-
-<!-- ─── SCROLL PROGRESS ─────────────────────────────────── -->
-<div id="progress"></div>
-
-<!-- ─── NAVIGATION ──────────────────────────────────────── -->
-<nav id="nav">
-  <div class="nav-inner">
-    <a href="#hero" class="nav-logo">NW.</a>
-
-    <!-- Desktop menu -->
-    <ul class="nav-menu" id="navMenu">
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#exp">Experience</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#why">Why Me</a></li>
-      <li><a href="#contact" class="nav-cta-pill">Hire Me</a></li>
-    </ul>
-
-    <!-- Mobile hamburger -->
-    <button class="ham-btn" id="hamBtn" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-
-<!-- ─── MOBILE DRAWER ────────────────────────────────────── -->
-<div class="drawer-overlay" id="drawerOverlay"></div>
-<aside class="drawer" id="drawer" role="navigation" aria-label="Mobile navigation">
-
-  <div class="drawer-top">
-    <span class="drawer-logo">NW.</span>
-    <button class="drawer-x" id="drawerX" aria-label="Close menu">✕</button>
-  </div>
-
-  <nav class="drawer-nav">
-    <a href="#about">
-      <span class="d-link-num">01</span>
-      <span class="d-link-name">About</span>
-      <span class="d-link-arrow">→</span>
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<header class="header" data-header>
+  <div class="wrap header-inner">
+    <!-- No aria-label: the visible text already names the link, and an
+         aria-label that doesn't contain the visible text breaks voice control. -->
+    <a href="#top" class="brand">
+      <span class="brand-mark" aria-hidden="true">NW</span>
+      Nikesh Walia
     </a>
-    <a href="#skills">
-      <span class="d-link-num">02</span>
-      <span class="d-link-name">Skills</span>
-      <span class="d-link-arrow">→</span>
-    </a>
-    <a href="#exp">
-      <span class="d-link-num">03</span>
-      <span class="d-link-name">Experience</span>
-      <span class="d-link-arrow">→</span>
-    </a>
-    <a href="#projects">
-      <span class="d-link-num">04</span>
-      <span class="d-link-name">Projects</span>
-      <span class="d-link-arrow">→</span>
-    </a>
-    <a href="#why">
-      <span class="d-link-num">05</span>
-      <span class="d-link-name">Why Me</span>
-      <span class="d-link-arrow">→</span>
-    </a>
-    <a href="#contact">
-      <span class="d-link-num">06</span>
-      <span class="d-link-name">Contact</span>
-      <span class="d-link-arrow">→</span>
-    </a>
-  </nav>
 
-  <div class="drawer-foot">
-    <div class="drawer-foot-label">Get in touch</div>
-    <div class="drawer-contacts">
-      <a href="tel:+916239677566">
-        <span class="dc-ic">☎</span>
-        +91 62396 77566
-      </a>
-      <a href="mailto:nikeshwalia@gmail.com">
-        <span class="dc-ic">✉</span>
-        nikeshwalia@gmail.com
-      </a>
-      <a href="https://www.linkedin.com/in/nikesh-walia/" target="_blank" rel="noopener">
-        <span class="dc-ic" style="font-size:.65rem;font-weight:900">in</span>
-        linkedin.com/in/nikesh-walia
-      </a>
-    </div>
-    <div class="drawer-pills">
-      <a href="Nikesh_CV.pdf" download class="d-pill">Download CV ↓</a>
-      <a href="#contact" class="d-pill">Hire Me →</a>
+    <nav class="nav" aria-label="Sections" data-spy>
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#contact">Contact</a>
+      <span class="nav-ink" data-nav-ink aria-hidden="true"></span>
+    </nav>
+
+    <div class="header-actions">
+      <button class="cmd-trigger" data-cmdk-open aria-label="Open command palette">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.4-3.4"/>
+        </svg>
+        Search
+        <kbd data-kbd-mod>⌘</kbd><kbd>K</kbd>
+      </button>
+
+      <!-- Mobile replacement for the nav + search: opens the palette, which
+           indexes every section and action on the page. -->
+      <button class="icon-btn icon-btn--search" data-cmdk-open aria-label="Search and navigate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.4-3.4"/>
+        </svg>
+      </button>
+
+      <div class="theme-switch" role="group" aria-label="Colour theme">
+        <button type="button" data-theme-set="light" aria-pressed="false" aria-label="Light theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M5 5l1.5 1.5M17.5 17.5 19 19M2 12h2M20 12h2M5 19l1.5-1.5M17.5 6.5 19 5"/>
+          </svg>
+        </button>
+        <button type="button" data-theme-set="dark" aria-pressed="false" aria-label="Dark theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+          </svg>
+        </button>
+        <button type="button" data-theme-set="system" aria-pressed="false" aria-label="Match system theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
+</header>
 
-</aside>
+<main id="main">
+<span id="top"></span>
 
-<!-- ════════════════════════════════════════════
-     HERO
-════════════════════════════════════════════ -->
-<section id="hero">
-  <div class="h-blob h-blob-1"></div>
-  <div class="h-blob h-blob-2"></div>
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero" data-spotlight data-reveal-group>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
 
-  <div class="hero-inner wrap">
+    <div>
+      <span class="availability" data-reveal>
+        <span class="dot" aria-hidden="true"></span>
+        Open to QA Engineer &amp; SDET roles
+      </span>
 
-    <!-- Status pill -->
-    <div class="h-chip">
-      <span class="h-chip-dot"></span>
-      Open to QA / SDET Roles
-    </div>
+      <!-- The name is the brand on a personal site: it carries the H1 and the
+           display size. The thesis sits directly beneath it at secondary
+           weight, so identity and claim both land inside one glance. -->
+      <h1 data-reveal>Nikesh Walia</h1>
 
-    <!-- Name -->
-    <h1 class="h-name">
-      NIKESH<br>
-      <span class="h-name-accent">WALIA.</span>
-    </h1>
-
-    <!-- Typing role -->
-    <p class="h-role">
-      <span id="typed"></span><span class="blink"></span>
-    </p>
-
-    <!-- Tagline -->
-    <p class="h-tag">
-      Intercepted <strong>30+ critical defects</strong> before production &amp;
-      eliminated <strong>70%</strong> of manual QA overhead through targeted automation —
-      backed by a developer's instinct that finds edge cases others miss.
-    </p>
-
-    <!-- CTAs -->
-    <div class="h-cta">
-      <a href="#projects" class="btn-lime">View My Work ↓</a>
-      <a href="Nikesh_CV.pdf" download class="btn-ghost">Download Resume ↗</a>
-    </div>
-
-    <!-- Key stats -->
-    <div class="h-stats">
-      <div class="h-stat">
-        <div class="h-stat-n" data-n="30" data-s="+">30+</div>
-        <div class="h-stat-l">Critical defects blocked</div>
-      </div>
-      <div class="h-stat">
-        <div class="h-stat-n" data-n="70" data-s="%">70%</div>
-        <div class="h-stat-l">Manual effort eliminated</div>
-      </div>
-      <div class="h-stat">
-        <div class="h-stat-n" data-n="500" data-s="+">500+</div>
-        <div class="h-stat-l">URLs automated</div>
-      </div>
-      <div class="h-stat">
-        <div class="h-stat-n" data-n="100" data-s="+">100+</div>
-        <div class="h-stat-l">Test cases executed</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Scroll hint -->
-  <div class="h-scroll">
-    <div class="h-scroll-line"></div>
-    <span class="h-scroll-txt">Scroll</span>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════
-     MARQUEE STRIP
-════════════════════════════════════════════ -->
-<div class="marquee-band">
-  <div class="marquee-track">
-    <!-- Original set -->
-    <span class="m-item">QA Engineer</span><span class="m-dot">◆</span>
-    <span class="m-item">Selenium WebDriver</span><span class="m-dot">◆</span>
-    <span class="m-item">Automation Testing</span><span class="m-dot">◆</span>
-    <span class="m-item">SQL Root-Cause Analysis</span><span class="m-dot">◆</span>
-    <span class="m-item">Python</span><span class="m-dot">◆</span>
-    <span class="m-item">Regression Testing</span><span class="m-dot">◆</span>
-    <span class="m-item">Cross-Platform QA</span><span class="m-dot">◆</span>
-    <span class="m-item">Bug Hunter</span><span class="m-dot">◆</span>
-    <span class="m-item">Test Data Factory</span><span class="m-dot">◆</span>
-    <span class="m-item">Flutter &amp; React Native</span><span class="m-dot">◆</span>
-    <span class="m-item">Postman</span><span class="m-dot">◆</span>
-    <span class="m-item">Docker</span><span class="m-dot">◆</span>
-    <!-- Duplicate for seamless loop -->
-    <span class="m-item">QA Engineer</span><span class="m-dot">◆</span>
-    <span class="m-item">Selenium WebDriver</span><span class="m-dot">◆</span>
-    <span class="m-item">Automation Testing</span><span class="m-dot">◆</span>
-    <span class="m-item">SQL Root-Cause Analysis</span><span class="m-dot">◆</span>
-    <span class="m-item">Python</span><span class="m-dot">◆</span>
-    <span class="m-item">Regression Testing</span><span class="m-dot">◆</span>
-    <span class="m-item">Cross-Platform QA</span><span class="m-dot">◆</span>
-    <span class="m-item">Bug Hunter</span><span class="m-dot">◆</span>
-    <span class="m-item">Test Data Factory</span><span class="m-dot">◆</span>
-    <span class="m-item">Flutter &amp; React Native</span><span class="m-dot">◆</span>
-    <span class="m-item">Postman</span><span class="m-dot">◆</span>
-    <span class="m-item">Docker</span><span class="m-dot">◆</span>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════════
-     ABOUT
-════════════════════════════════════════════ -->
-<section id="about" class="sec">
-  <div class="wrap">
-
-    <div class="rv">
-      <span class="eyebrow">About Me</span>
-      <h2 class="sec-h">The QA Engineer<br>with a <span class="hl">Dev Edge.</span></h2>
-    </div>
-
-    <div class="about-layout">
-
-      <!-- Bio text -->
-      <div class="about-copy rv" style="transition-delay:.12s">
-        <p>
-          I'm a <strong>QA Engineer with 1.5+ years</strong> of experience specialising in Selenium
-          automation, SQL validation, and cross-platform testing. I don't just catch bugs —
-          I build systems that stop them reaching production in the first place.
-        </p>
-        <p>
-          My <strong>Flutter &amp; React Native development background</strong> gives me an
-          insider's view of mobile rendering, lifecycle events, and platform APIs —
-          letting me surface edge cases that purely test-focused engineers consistently overlook.
-        </p>
-        <p>
-          I treat quality engineering like software architecture: every suite I write is
-          <strong>configurable, reusable, and built to scale</strong> alongside the product
-          it protects.
-        </p>
-      </div>
-
-      <!-- Bento cards -->
-      <div class="about-bento rv" style="transition-delay:.24s">
-
-        <div class="ab-card big-num">
-          <div>
-            <div class="ab-big" data-n="1.5" data-s="+" data-float>1.5+</div>
-            <div class="ab-big-l">Years of QA &amp;<br>automation experience</div>
-          </div>
-        </div>
-
-        <div class="ab-card">
-          <div class="ab-ico">⚡</div>
-          <h4>Automation-First</h4>
-          <p>Turns repetitive manual cycles into scalable, configurable frameworks permanently.</p>
-        </div>
-
-        <div class="ab-card">
-          <div class="ab-ico">🔬</div>
-          <h4>SQL Root-Cause</h4>
-          <p>Diagnoses failures at the data layer — not just the UI surface.</p>
-        </div>
-
-        <div class="ab-card wide">
-          <div class="ab-ico">🎓</div>
-          <div class="ab-edu-name">B.Tech — Computer Science Engineering</div>
-          <div class="ab-edu-sub">Chandigarh Engineering College · 2020–2024</div>
-          <div class="ab-cgpa">8.10<span style="font-size:1.5rem;opacity:.45"> /10</span></div>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════
-     SKILLS
-════════════════════════════════════════════ -->
-<section id="skills" class="sec sec-dark">
-  <div class="wrap">
-
-    <div class="rv">
-      <span class="eyebrow">Technical Skills</span>
-      <h2 class="sec-h">My <span class="hl">Stack</span></h2>
-    </div>
-
-    <div class="sk-grid">
-
-      <div class="sk-card rv" style="transition-delay:.1s">
-        <div class="sk-head">
-          <div class="sk-ico">🧪</div>
-          <span class="sk-cat">Testing</span>
-        </div>
-        <div class="sk-bars">
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Selenium WebDriver</span><span class="sk-pct">92%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="92"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Automation Testing</span><span class="sk-pct">90%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="90"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Manual Testing</span><span class="sk-pct">95%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="95"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Regression / Functional</span><span class="sk-pct">88%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="88"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Smoke Testing</span><span class="sk-pct">90%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="90"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sk-card rv" style="transition-delay:.2s">
-        <div class="sk-head">
-          <div class="sk-ico">💻</div>
-          <span class="sk-cat">Programming</span>
-        </div>
-        <div class="sk-bars">
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Python</span><span class="sk-pct">88%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="88"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">JavaScript</span><span class="sk-pct">75%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="75"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Dart (Flutter)</span><span class="sk-pct">78%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="78"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">C#</span><span class="sk-pct">65%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="65"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sk-card rv" style="transition-delay:.3s">
-        <div class="sk-head">
-          <div class="sk-ico">🗄️</div>
-          <span class="sk-cat">Database</span>
-        </div>
-        <div class="sk-bars">
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">SQL Server</span><span class="sk-pct">87%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="87"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">MySQL</span><span class="sk-pct">85%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="85"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">PostgreSQL</span><span class="sk-pct">80%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="80"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Root-Cause Analysis</span><span class="sk-pct">90%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="90"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sk-card rv" style="transition-delay:.4s">
-        <div class="sk-head">
-          <div class="sk-ico">⚙️</div>
-          <span class="sk-cat">Tools</span>
-        </div>
-        <div class="sk-bars">
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Git</span><span class="sk-pct">88%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="88"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Postman</span><span class="sk-pct">84%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="84"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">Docker</span><span class="sk-pct">70%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="70"></div></div>
-          </div>
-          <div class="sk-row">
-            <div class="sk-meta"><span class="sk-name">TensorFlow / ML</span><span class="sk-pct">72%</span></div>
-            <div class="sk-track"><div class="sk-fill" data-w="72"></div></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════
-     EXPERIENCE
-════════════════════════════════════════════ -->
-<section id="exp" class="sec">
-  <div class="wrap">
-
-    <div class="rv">
-      <span class="eyebrow">Experience</span>
-      <h2 class="sec-h">Where I've <span class="hl">Delivered.</span></h2>
-    </div>
-
-    <div class="tl">
-
-      <!-- Job 1 -->
-      <div class="tl-item rv" style="transition-delay:.1s">
-        <div class="tl-box">
-          <div class="tl-top">
-            <span class="tl-role">QA Engineer</span>
-            <span class="tl-when">Jan 2025 — Present</span>
-          </div>
-          <div class="tl-co">Techsapphire Solutions · Panchkula, India</div>
-          <ul class="tl-list">
-            <li>Executed <span class="bold">100+ manual &amp; automated test cases</span>, intercepting 30+ critical defects before production release.</li>
-            <li>Built a Selenium WebDriver suite validating <span class="bold">500+ live URLs</span> with retry &amp; redirect logic — cutting manual effort by <span class="bold">70%</span>.</li>
-            <li>Delivered full coverage across functional, regression, and smoke cycles, preventing production incidents.</li>
-            <li>Engineered a reusable <span class="bold">SQL test-data factory</span> — standardising multi-environment provisioning, eliminating per-sprint setup overhead.</li>
-            <li>Performed <span class="bold">SQL root-cause analysis</span> on recurring defects — reduced reopen rate and shortened developer resolution cycles.</li>
-            <li>Leveraged <span class="bold">Flutter &amp; React Native</span> expertise to expose platform-specific edge cases missed by standard test plans.</li>
-          </ul>
-          <div class="chips">
-            <span class="chip c-g">↓ 70% Manual Effort</span>
-            <span class="chip c-l">30+ Defects Blocked</span>
-            <span class="chip c-c">500+ URLs Automated</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Job 2 -->
-      <div class="tl-item rv" style="transition-delay:.22s">
-        <div class="tl-box">
-          <div class="tl-top">
-            <span class="tl-role">Data Science Intern</span>
-            <span class="tl-when">Jan 2024 — Jun 2024</span>
-          </div>
-          <div class="tl-co">Hoping Minds · Mohali, India</div>
-          <ul class="tl-list">
-            <li>Built predictive ML models using <span class="bold">Python &amp; Pandas</span>, achieving ~30% accuracy improvement over baseline.</li>
-            <li>Automated ETL pipelines — reduced manual data-processing overhead and improved pipeline reliability.</li>
-          </ul>
-          <div class="chips">
-            <span class="chip c-g">~30% Accuracy Gain</span>
-            <span class="chip c-l">ETL Automation</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════
-     PROJECTS
-════════════════════════════════════════════ -->
-<section id="projects" class="sec sec-dark">
-  <div class="wrap">
-
-    <div class="rv">
-      <span class="eyebrow">Projects</span>
-      <h2 class="sec-h">Things I've <span class="hl">Built.</span></h2>
-      <p class="proj-intro-txt">Real-world systems. Every project solves a genuine problem.</p>
-    </div>
-
-    <div class="proj-grid">
-
-      <!-- Featured: full-width -->
-      <div class="proj-card span2 rv" style="transition-delay:.1s">
-        <div class="proj-feat-inner">
-          <div>
-            <div class="proj-num">01 · Featured Project</div>
-            <h3 class="proj-ttl">Order Meal — Selenium Automation Suite</h3>
-            <p class="proj-desc">
-              Production-grade Selenium-Python framework built for real-world e-commerce testing.
-              Configurable retry logic, intelligent redirect handling, and timeout management baked in.
-              Scales across environments with zero per-run config overhead.
-            </p>
-            <div class="proj-win">
-              <span>↗ Auto-generated Excel reports log pass/fail, failure reason &amp; timestamp — zero manual reporting effort per run.</span>
-            </div>
-            <div class="tech-row">
-              <span class="t-tag">Selenium</span>
-              <span class="t-tag">Python</span>
-              <span class="t-tag">openpyxl</span>
-              <span class="t-tag">Retry Logic</span>
-              <span class="t-tag">Cross-browser</span>
-            </div>
-          </div>
-
-          <!-- Terminal mock -->
-          <div class="terminal">
-            <div class="term-bar">
-              <div class="td r"></div><div class="td y"></div><div class="td g"></div>
-              <span class="term-ttl">run_suite.py — staging env</span>
-            </div>
-            <div class="term-body">
-              <div class="t-m">$ python run_suite.py --env staging</div>
-              <br>
-              <div class="t-g">✓ PASS  login_flow            [0.82s]</div>
-              <div class="t-g">✓ PASS  cart_add_item         [1.14s]</div>
-              <div class="t-y">⚠ RETRY checkout_step_2      [2.30s]</div>
-              <div class="t-g">✓ PASS  checkout_step_2       [0.91s]</div>
-              <div class="t-g">✓ PASS  payment_flow          [1.55s]</div>
-              <div class="t-l">✓ PASS  url_redirect_chain    [0.34s]</div>
-              <div class="t-g">✓ PASS  logout_clear_session  [0.27s]</div>
-              <div class="t-r">✗ FAIL  promo_code_edge_case  [3.10s]</div>
-              <br>
-              <div class="t-m">Passed: <span class="t-g">47</span>  Failed: <span class="t-r">1</span>  Retried: <span class="t-y">3</span></div>
-              <div class="t-c">Report → results_2025-04-11.xlsx ✓</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Project 2 -->
-      <div class="proj-card rv" style="transition-delay:.22s">
-        <div class="proj-num">02</div>
-        <h3 class="proj-ttl">CropCraft — ML Crop Recommender</h3>
-        <p class="proj-desc">
-          End-to-end ML system classifying optimal crops from soil and weather parameters.
-          TensorFlow classifier tuned to ~85% accuracy via systematic hyperparameter search,
-          deployed as a real-time Flask REST API accessible over HTTP.
-        </p>
-        <div class="proj-win">
-          <span>↗ ~85% classification accuracy. Predictions served at scale via REST API.</span>
-        </div>
-        <div class="tech-row">
-          <span class="t-tag">Python</span>
-          <span class="t-tag">TensorFlow</span>
-          <span class="t-tag">Flask REST</span>
-          <span class="t-tag">Pandas</span>
-          <span class="t-tag">HyperParam Tuning</span>
-        </div>
-      </div>
-
-      <!-- Project 3 -->
-      <div class="proj-card rv" style="transition-delay:.34s">
-        <div class="proj-num">03</div>
-        <h3 class="proj-ttl">SQL Test-Data Factory</h3>
-        <p class="proj-desc">
-          Reusable provisioning system built at Techsapphire to standardise multi-environment
-          test-data setup. Eliminates per-sprint manual database preparation — ensuring
-          consistent, drift-free environments across QA, staging, and production mirrors.
-        </p>
-        <div class="proj-win">
-          <span>↗ Sprint setup → near-zero overhead. Environment-drift defects: zero post-implementation.</span>
-        </div>
-        <div class="tech-row">
-          <span class="t-tag">SQL Server</span>
-          <span class="t-tag">PostgreSQL</span>
-          <span class="t-tag">Python</span>
-          <span class="t-tag">Multi-environment</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════
-     WHY ME
-════════════════════════════════════════════ -->
-<section id="why" class="sec">
-  <div class="wrap">
-
-    <div class="rv">
-      <span class="eyebrow">Competitive Edge</span>
-      <h2 class="sec-h">What Makes Me <span class="hl">Different.</span></h2>
-      <p class="why-sub">
-        Most QA engineers catch bugs. I build systems that prevent them —
-        and understand the code well enough to diagnose exactly why they occur.
-      </p>
-    </div>
-
-    <div class="why-grid">
-      <div class="why-card rv" style="transition-delay:.1s">
-        <div class="why-n">01</div>
-        <h3 class="why-ttl">Automation Architect, Not Just a Tester</h3>
-        <p class="why-desc">I don't write throwaway scripts. My frameworks include retry logic, environment management, and structured reporting baked in. They grow with the product — permanently cutting sprint overhead, not just once.</p>
-      </div>
-      <div class="why-card rv" style="transition-delay:.2s">
-        <div class="why-n">02</div>
-        <h3 class="why-ttl">Root-Cause Debugging via SQL</h3>
-        <p class="why-desc">When a defect recurs, I go below the UI layer. SQL root-cause analysis pinpoints data failures, reduces reopen rates, and gives developers precise, actionable context — not just a screenshot of an error state.</p>
-      </div>
-      <div class="why-card rv" style="transition-delay:.3s">
-        <div class="why-n">03</div>
-        <h3 class="why-ttl">Developer + QA = Edge Cases Others Miss</h3>
-        <p class="why-desc">Building apps in Flutter and React Native taught me platform rendering, lifecycle hooks, and API behavior at a deep level. I apply that daily to catch failures that test-only engineers routinely overlook.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════
-     CONTACT
-════════════════════════════════════════════ -->
-<section id="contact" class="sec sec-dark">
-  <div class="wrap">
-
-    <div class="contact-inner rv">
-      <span class="eyebrow">Let's Connect</span>
-      <h2 class="sec-h">Ready to <span class="hl">Collaborate?</span></h2>
-      <p class="contact-sub">
-        I'm actively looking for QA Engineer, Automation Tester, and SDET roles.
-        If your team takes quality seriously, I'd love to talk.
+      <p class="hero-claim" data-reveal>
+        Finding failure <em>before your users do.</em>
       </p>
 
-      <!-- Contact cards -->
-      <div class="contact-cards">
+      <p class="hero-role" data-reveal>
+        QA Engineer at Techsapphire Solutions
+      </p>
 
-        <a href="tel:+916239677566" class="c-card">
-          <div class="c-card-ico">☎</div>
-          <div class="c-card-label">Phone</div>
-          <div class="c-card-val">+91 62396 77566</div>
+      <p class="hero-lede" data-reveal>
+        I build Selenium and SQL automation that turns repeat manual cycles into suites
+        that run themselves — so defects surface in a pipeline, not in production.
+      </p>
+
+      <div class="hero-actions" data-reveal>
+        <a href="#work" class="btn btn--primary">
+          Read the case studies
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
-
-        <a href="mailto:nikeshwalia@gmail.com" class="c-card">
-          <div class="c-card-ico">✉</div>
-          <div class="c-card-label">Email</div>
-          <div class="c-card-val">nikeshwalia@gmail.com</div>
+        <a href="Nikesh_CV.pdf" download class="btn btn--ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Résumé
         </a>
-
-        <a href="https://www.linkedin.com/in/nikesh-walia/" target="_blank" rel="noopener noreferrer" class="c-card">
-          <div class="c-card-ico" style="font-size:.75rem;font-weight:900">in</div>
-          <div class="c-card-label">LinkedIn</div>
-          <div class="c-card-val">linkedin/nikesh-walia</div>
-        </a>
-
+        <button class="btn btn--quiet" data-cmdk-open>
+          Search this site <span class="kbd-pair"><kbd data-kbd-mod>⌘</kbd><kbd>K</kbd></span>
+        </button>
       </div>
 
-      <a href="Nikesh_CV.pdf" download class="btn-lime">
-        Download Resume ↓
-      </a>
+      <!-- Separators are drawn in CSS, not authored as content, so a wrap
+           can never strand a bullet at the end of a line. -->
+      <div class="hero-meta" data-reveal>
+        <span>Panchkula, India — open to remote &amp; on-site</span>
+        <span>QA Engineer since Jan 2025</span>
+        <span>B.Tech CSE, Chandigarh Engineering College '24 — 8.10 CGPA</span>
+      </div>
+    </div>
+
+    <!-- A model of how the suite runs. Stage names and figures are real;
+         this is a diagram, not simulated log output. Stages are explorable:
+         click or focus one and the detail line explains it. -->
+    <div class="pipeline rvl" data-reveal data-rvl-scope role="group" aria-labelledby="pipe-title">
+      <div class="pipeline-head">
+        <span id="pipe-title">regression-suite · staging</span>
+        <span class="tag">Explore the stages</span>
+      </div>
+
+      <ol class="stages" data-pipeline>
+        <li>
+          <button type="button" class="stage" data-state="pass" aria-pressed="false"
+                  data-detail="Runs first on every build — a broken deploy fails in minutes, never after a full pass.">
+            <span class="stage-bullet" aria-hidden="true">1</span>
+            <span>
+              <span class="stage-name">smoke</span>
+              <span class="stage-note"> — is the build even up?</span>
+            </span>
+            <span class="stage-val">~2 min</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="stage" data-state="pass" aria-pressed="false"
+                  data-detail="Every URL is asserted on its final resolved destination — redirect chains followed, failures retried with backoff.">
+            <span class="stage-bullet" aria-hidden="true">2</span>
+            <span>
+              <span class="stage-name">url_sweep</span>
+              <span class="stage-note"> — retry + redirect chains</span>
+            </span>
+            <span class="stage-val">500+ URLs</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="stage" data-state="work" aria-pressed="true"
+                  data-detail="The full functional and regression pass — the cycles that used to be a manual, repeated slog.">
+            <span class="stage-bullet" aria-hidden="true">3</span>
+            <span>
+              <span class="stage-name">regression</span>
+              <span class="stage-note"> — functional &amp; smoke cycles</span>
+            </span>
+            <span class="stage-val">100+ cases</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="stage" aria-pressed="false"
+                  data-detail="UI counts reconciled against the database — when a report and its data disagree, the data wins.">
+            <span class="stage-bullet" aria-hidden="true">4</span>
+            <span>
+              <span class="stage-name">sql_validation</span>
+              <span class="stage-note"> — reconcile UI against data</span>
+            </span>
+            <span class="stage-val">root-cause</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="stage" aria-pressed="false"
+                  data-detail="An Excel artifact per run — result, failure reason, timestamp. Nobody writes a report by hand.">
+            <span class="stage-bullet" aria-hidden="true">5</span>
+            <span>
+              <span class="stage-name">report</span>
+              <span class="stage-note"> — pass/fail, reason, timestamp</span>
+            </span>
+            <span class="stage-val">results.xlsx</span>
+          </button>
+        </li>
+      </ol>
+
+      <p class="pipeline-detail" data-pipeline-detail aria-live="polite">
+        The full functional and regression pass — the cycles that used to be a manual, repeated slog.
+      </p>
+
+      <div class="pipeline-foot">
+        <span>manual effort ↓ ~70%</span>
+        <span>defects caught pre-release: 30+</span>
+      </div>
     </div>
 
   </div>
 </section>
 
-<!-- ════════════════════════════════════════════
-     FOOTER
-════════════════════════════════════════════ -->
-<footer>
-  <div class="wrap">
-    <div class="foot-inner">
-      <p>Built by <strong>Nikesh Walia</strong> · QA Engineer &amp; Automation Tester · 2025</p>
-      <a href="#hero" class="back-top" title="Back to top">↑</a>
+<!-- ═══════════════════════ PROOF ═══════════════════════ -->
+<section class="section section--tight" aria-label="Results">
+  <div class="wrap rail">
+    <div class="rail-label"><span>01</span>Impact</div>
+    <!-- Three tiles, not four: execution count is activity, not impact, and
+         placing "100+ cases" beside "30+ critical defects" invites a
+         defects-per-case reading that undersells both numbers. -->
+    <div class="proof" data-reveal-group>
+      <div class="proof-item" data-reveal>
+        <div class="proof-n">30+</div>
+        <div class="proof-l">Critical defects intercepted before production release</div>
+        <div class="proof-src">Techsapphire · 2025–present</div>
+      </div>
+      <div class="proof-item" data-reveal>
+        <div class="proof-n">~70%</div>
+        <div class="proof-l">Manual QA effort removed by automating repeat cycles</div>
+        <div class="proof-src">vs the prior manual pass</div>
+      </div>
+      <div class="proof-item" data-reveal>
+        <div class="proof-n">500+</div>
+        <div class="proof-l">Live URLs validated per run, with retry and redirect logic</div>
+        <div class="proof-src">Selenium WebDriver suite</div>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ WORK ═══════════════════════ -->
+<section class="section" id="work" data-index-section="Work">
+  <div class="wrap rail">
+    <div class="rail-label"><span>02</span>Work</div>
+
+    <div>
+      <div class="section-head" data-reveal-group>
+        <h2 class="h-section" data-reveal>Three systems, and what they cost to build</h2>
+        <p class="h-sub" data-reveal>
+          Each one replaced something that was being done by hand. Expand any card for the
+          constraint, the approach and what I'd change with more time.
+        </p>
+      </div>
+
+      <div class="cases" data-reveal-group data-rvl-scope>
+
+        <!-- ─── Case 01 ─── -->
+        <article class="case rvl" id="case-suite" data-reveal
+                 data-index-case="Order Meal — Selenium automation suite"
+                 data-index-sub="Selenium · Python · retry logic · Excel reporting">
+          <div class="case-head" data-case-toggle>
+            <div>
+              <div class="case-idx"><b>01</b> · Automation framework · Personal project</div>
+              <h3>Order Meal — Selenium automation suite</h3>
+              <p class="case-sum">
+                A configurable Selenium + Python framework for end-to-end e-commerce flows.
+                Retry, timeout and redirect handling live in the runner rather than being
+                sprinkled through individual tests, so adding an environment or a flow is
+                configuration instead of new code.
+              </p>
+              <div class="case-stack">
+                <span class="chip chip--mono">Selenium WebDriver</span>
+                <span class="chip chip--mono">Python</span>
+                <span class="chip chip--mono">openpyxl</span>
+                <span class="chip chip--mono">Retry / redirect</span>
+              </div>
+            </div>
+
+            <!-- The artifact the suite actually produces: its Excel report. -->
+            <div class="artifact" aria-label="Shape of the generated Excel report">
+              <div class="artifact-head">results.xlsx <span>per run</span></div>
+              <div class="artifact-row"><span class="a-name">login_flow</span><span class="a-val ok">PASS</span><span class="a-ms">0.82s</span></div>
+              <div class="artifact-row"><span class="a-name">checkout_step_2</span><span class="a-val rt">RETRY</span><span class="a-ms">2.30s</span></div>
+              <div class="artifact-row"><span class="a-name">url_redirect_chain</span><span class="a-val ok">PASS</span><span class="a-ms">0.34s</span></div>
+              <div class="artifact-row"><span class="a-name">promo_code_edge</span><span class="a-val no">FAIL</span><span class="a-ms">3.10s</span></div>
+              <div class="artifact-foot">result · failure reason · timestamp — no manual reporting</div>
+            </div>
+          </div>
+
+          <details class="case-detail">
+            <summary>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+              <span class="lbl-open">Read the engineering detail</span>
+              <span class="lbl-close">Hide detail</span>
+            </summary>
+            <div class="case-body">
+              <div class="case-block">
+                <h4>Constraint</h4>
+                <ul>
+                  <li>Flaky network and redirect chains made naive assertions unreliable.</li>
+                  <li>Every run ended with a hand-written report of what passed and why things failed.</li>
+                </ul>
+              </div>
+              <div class="case-block">
+                <h4>Approach</h4>
+                <ul>
+                  <li>Retry with backoff at the <strong>runner</strong> level, not per test.</li>
+                  <li>Explicit waits over fixed sleeps — no <strong>time.sleep()</strong> anywhere.</li>
+                  <li>Redirect chains followed and asserted on the final resolved URL.</li>
+                </ul>
+              </div>
+              <div class="case-block">
+                <h4>Outcome</h4>
+                <ul>
+                  <li>Excel report generated per run: result, failure reason, timestamp.</li>
+                  <li>Adding an environment or flow is configuration, not new code.</li>
+                </ul>
+              </div>
+              <div class="case-block">
+                <h4>What I'd change</h4>
+                <ul>
+                  <li>Move reporting to JUnit XML so CI can consume it natively.</li>
+                  <li>Quarantine flaky tests automatically instead of blanket retries.</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <!-- ─── Case 02 ─── -->
+        <article class="case rvl" id="case-factory" data-reveal
+                 data-index-case="SQL test-data factory"
+                 data-index-sub="Internal tooling · SQL Server · PostgreSQL">
+          <div class="case-head" data-case-toggle>
+            <div>
+              <div class="case-idx"><b>02</b> · Internal tooling · Techsapphire</div>
+              <h3>SQL test-data factory</h3>
+              <p class="case-sum">
+                A reusable provisioning system that standardised test data across
+                environments. It removed the manual database prep every sprint opened with,
+                and made QA, staging and production mirrors consistent by default.
+              </p>
+              <div class="case-stack">
+                <span class="chip chip--mono">SQL Server</span>
+                <span class="chip chip--mono">PostgreSQL</span>
+                <span class="chip chip--mono">Python</span>
+                <span class="chip chip--mono">Multi-environment</span>
+              </div>
+            </div>
+
+            <!-- One seed definition fans out to every environment. -->
+            <div class="artifact" aria-label="How one seed set provisions every environment">
+              <div class="artifact-head">seed.sql <span>defined once</span></div>
+              <div class="artifact-row"><span class="a-name">→ QA</span><span class="a-val ok">consistent</span></div>
+              <div class="artifact-row"><span class="a-name">→ staging</span><span class="a-val ok">consistent</span></div>
+              <div class="artifact-row"><span class="a-name">→ prod mirror</span><span class="a-val ok">consistent</span></div>
+              <div class="artifact-row"><span class="a-name">sprint DB prep</span><span class="a-val no">removed</span></div>
+              <div class="artifact-foot">environment drift stopped appearing in triage</div>
+            </div>
+          </div>
+
+          <details class="case-detail">
+            <summary>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+              <span class="lbl-open">Read the engineering detail</span>
+              <span class="lbl-close">Hide detail</span>
+            </summary>
+            <div class="case-body">
+              <div class="case-block">
+                <h4>Constraint</h4>
+                <ul>
+                  <li>Every sprint began with hand-built database state.</li>
+                  <li>Environments drifted, so failures were often environmental, not real.</li>
+                </ul>
+              </div>
+              <div class="case-block">
+                <h4>Approach</h4>
+                <ul>
+                  <li>One repeatable provisioning step per environment.</li>
+                  <li>Seed data defined once and reused, instead of per-tester improvisation.</li>
+                </ul>
+              </div>
+              <div class="case-block">
+                <h4>Outcome</h4>
+                <ul>
+                  <li>Per-sprint setup overhead removed.</li>
+                  <li>Environment-drift defects stopped appearing in triage.</li>
+                </ul>
+              </div>
+              <div class="case-block">
+                <h4>What I'd change</h4>
+                <ul>
+                  <li>Version the seed sets so a run pins the exact data it used.</li>
+                  <li>Teardown as a first-class step, not a manual cleanup.</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <!-- ─── Case 03 ─── -->
+        <article class="case rvl" id="case-cropcraft" data-reveal
+                 data-index-case="CropCraft — ML crop recommendation"
+                 data-index-sub="Python · TensorFlow · Flask REST API">
+          <div class="case-head" data-case-toggle>
+            <div>
+              <div class="case-idx"><b>03</b> · Machine learning · Personal project</div>
+              <h3>CropCraft — crop recommendation service</h3>
+              <p class="case-sum">
+                A TensorFlow classifier recommending crops from multi-feature soil and
+                weather data, tuned to ~85% accuracy through systematic
+                hyperparameter search and served as a Flask REST API.
+              </p>
+              <div class="case-stack">
+                <span class="chip chip--mono">Python</span>
+                <span class="chip chip--mono">TensorFlow</span>
+                <span class="chip chip--mono">Flask</span>
+                <span class="chip chip--mono">Pandas</span>
+              </div>
+            </div>
+
+            <div class="artifact artifact--stat" aria-label="Model accuracy and serving endpoint">
+              <div class="artifact-stat">~85%</div>
+              <div class="artifact-stat-l">classification accuracy after systematic hyperparameter search</div>
+              <div class="artifact-row"><span class="a-name">POST /predict</span><span class="a-val ok">200</span><span class="a-ms">JSON</span></div>
+              <div class="artifact-foot">real-time predictions over HTTP</div>
+            </div>
+          </div>
+
+          <details class="case-detail">
+            <summary>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+              <span class="lbl-open">Read the engineering detail</span>
+              <span class="lbl-close">Hide detail</span>
+            </summary>
+            <div class="case-body">
+              <div class="case-block">
+                <h4>Approach</h4>
+                <ul>
+                  <li>Systematic hyperparameter search rather than one-off tuning.</li>
+                  <li>Model served over HTTP so any client can consume predictions.</li>
+                </ul>
+              </div>
+              <div class="case-block">
+                <h4>Outcome</h4>
+                <ul>
+                  <li><strong>~85%</strong> classification accuracy on multi-feature input.</li>
+                  <li>Real-time predictions via a Flask REST endpoint.</li>
+                </ul>
+              </div>
+              <div class="case-block">
+                <h4>Testing view</h4>
+                <ul>
+                  <li>The interesting cases are the boundaries — inputs at the edges of each feature range.</li>
+                  <li>A model endpoint still needs schema, error and latency assertions like any other API.</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ EXPERIENCE ═══════════════════════ -->
+<section class="section" id="experience" data-index-section="Experience">
+  <div class="wrap rail">
+    <div class="rail-label"><span>03</span>Experience</div>
+
+    <div>
+      <div class="section-head" data-reveal-group>
+        <h2 class="h-section" data-reveal>Where I've worked</h2>
+      </div>
+
+      <div class="roles" data-reveal-group>
+        <article class="role" data-reveal>
+          <div class="role-when">
+            Jan 2025 — Present
+            <span class="now"><span class="dot" aria-hidden="true"></span> Current</span>
+          </div>
+          <div>
+            <h3>QA Engineer</h3>
+            <p class="role-org">Techsapphire Solutions · Panchkula, India</p>
+            <ul>
+              <li>Own the release test pass — <strong>functional, regression and smoke</strong> — across 100+ manual and automated cases on web and mobile.</li>
+              <li>Intercepted <strong>30+ critical defects</strong> before production; recurring ones get traced to root cause in SQL, which cut the reopen rate and shortened developer resolution cycles.</li>
+              <li>Built and maintain the Selenium WebDriver suite validating <strong>500+ live URLs</strong> per run with retry and redirect handling — it replaced ~70% of the manual pass.</li>
+              <li>Engineered a reusable <strong>SQL test-data factory</strong>: provisioning became one repeatable step, and environment-drift defects stopped appearing in triage.</li>
+              <li>Use a <strong>Flutter and React Native</strong> development background to target rendering, lifecycle and platform-API edge cases that standard test plans miss.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="role" data-reveal>
+          <div class="role-when">Jan 2024 — Jun 2024</div>
+          <div>
+            <h3>Data Science Intern</h3>
+            <p class="role-org">Hoping Minds · Mohali, India</p>
+            <ul>
+              <li>Built predictive ML models in <strong>Python and Pandas</strong>, achieving roughly <strong>30% accuracy gain</strong> over baseline.</li>
+              <li>Automated ETL pipelines, reducing manual data-processing overhead.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CAPABILITIES ═══════════════════════ -->
+<section class="section" id="capabilities" data-index-section="Capabilities">
+  <div class="wrap rail">
+    <div class="rail-label"><span>04</span>Capabilities</div>
+
+    <div>
+      <div class="section-head" data-reveal-group>
+        <h2 class="h-section" data-reveal>What I use, and where I've used it</h2>
+        <p class="h-sub" data-reveal>
+          Tools without context are a word cloud. Each group below names where it was
+          actually applied — you can hold me to any line of it in an interview.
+        </p>
+      </div>
+
+      <div class="caps" data-reveal-group>
+
+        <div class="cap" data-reveal data-index-skill="Testing" data-index-sub="Selenium, regression, smoke, bug tracking">
+          <h3>Testing</h3>
+          <div class="cap-list">
+            <span class="chip">Selenium WebDriver</span>
+            <span class="chip">Automation testing</span>
+            <span class="chip">Manual testing</span>
+            <span class="chip">Regression &amp; functional</span>
+            <span class="chip">Smoke testing</span>
+            <span class="chip">Bug tracking</span>
+          </div>
+          <p class="cap-evidence"><b>Applied in:</b> the 500+ URL regression suite and the daily functional, regression and smoke cycles at Techsapphire.</p>
+        </div>
+
+        <div class="cap" data-reveal data-index-skill="Programming" data-index-sub="Python, JavaScript, Dart, C#">
+          <h3>Programming</h3>
+          <div class="cap-list">
+            <span class="chip">Python</span>
+            <span class="chip">JavaScript</span>
+            <span class="chip">Dart (Flutter)</span>
+            <span class="chip">C#</span>
+          </div>
+          <p class="cap-evidence"><b>Applied in:</b> the Selenium framework and CropCraft (Python); Flutter and React Native app work that now drives how I hunt edge cases.</p>
+        </div>
+
+        <div class="cap" data-reveal data-index-skill="Databases" data-index-sub="SQL Server, MySQL, PostgreSQL, root-cause analysis">
+          <h3>Databases</h3>
+          <div class="cap-list">
+            <span class="chip">SQL Server</span>
+            <span class="chip">MySQL</span>
+            <span class="chip">PostgreSQL</span>
+            <span class="chip">Root-cause analysis</span>
+          </div>
+          <p class="cap-evidence"><b>Applied in:</b> the test-data factory, and tracing recurring defects to the data layer to cut reopen rates.</p>
+        </div>
+
+        <div class="cap" data-reveal data-index-skill="Tooling" data-index-sub="Git, Postman, Docker, VS Code">
+          <h3>Tooling</h3>
+          <div class="cap-list">
+            <span class="chip">Git</span>
+            <span class="chip">Postman</span>
+            <span class="chip">Docker</span>
+            <span class="chip">VS Code</span>
+          </div>
+          <p class="cap-evidence"><b>Also worked with:</b> TensorFlow and Pandas for ML, Flask for serving models, openpyxl for automated reporting.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CONTACT ═══════════════════════ -->
+<section class="section" id="contact" data-index-section="Contact">
+  <div class="wrap rail">
+    <div class="rail-label"><span>05</span>Contact</div>
+    <div class="cta rvl" data-rvl-scope data-reveal-group>
+      <h2 data-reveal>If your team ships often,<br>you need someone watching.</h2>
+      <p data-reveal>
+        I'm looking for QA Engineer, Automation Tester and SDET roles. If quality is a
+        constraint you take seriously, I'd like to hear about it — email is quickest.
+      </p>
+
+      <div class="cta-actions" data-reveal>
+        <a href="mailto:nikeshwalia@gmail.com?subject=QA%20role" class="btn btn--primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 8 9 5 9-5"/></svg>
+          Email me
+        </a>
+        <a href="Nikesh_CV.pdf" download class="btn btn--ghost">Download résumé</a>
+      </div>
+
+      <div class="cta-channels" data-reveal>
+        <button class="channel" data-copy="nikeshwalia@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          nikeshwalia@gmail.com
+        </button>
+        <button class="channel" data-copy="+916239677566">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          +91 62396 77566
+        </button>
+        <a class="channel" href="https://www.linkedin.com/in/nikesh-walia/" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05a4.2 4.2 0 0 1 3.75-2c4 0 4.75 2.6 4.75 6V21h-4v-5.6c0-1.35-.03-3.1-1.9-3.1-1.9 0-2.2 1.48-2.2 3v5.7H9z"/></svg>
+          linkedin.com/in/nikesh-walia
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span>© <span data-year>2026</span> Nikesh Walia</span>
+    <span class="footer-links">
+      <a href="mailto:nikeshwalia@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/nikesh-walia/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="Nikesh_CV.pdf" download>Résumé</a>
+      <a href="#top">Top</a>
+    </span>
   </div>
 </footer>
 
-<!-- Script -->
-<script src="script.js"></script>
+<!-- ═══════════════════════ COMMAND PALETTE ═══════════════════════ -->
+<div class="cmdk" data-cmdk data-open="false" role="dialog" aria-modal="true" aria-label="Search and commands">
+  <div class="cmdk-panel">
+    <div class="cmdk-input-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/><path d="m20 20-3.4-3.4"/>
+      </svg>
+      <input type="text" role="combobox" aria-expanded="false" aria-controls="cmdk-results"
+             aria-autocomplete="list" autocomplete="off" spellcheck="false"
+             placeholder="Search work, capabilities, actions…" aria-label="Search">
+    </div>
+    <div class="cmdk-results" id="cmdk-results" role="listbox" aria-label="Results" data-cmdk-results></div>
+    <div class="cmdk-foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> select</span>
+      <span><kbd>esc</kbd> close</span>
+      <span><kbd>T</kbd> theme</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" data-toast data-open="false" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>
+  <span data-toast-msg>Copied</span>
+</div>
+
+<script type="module" src="js/main.js"></script>
 </body>
 </html>

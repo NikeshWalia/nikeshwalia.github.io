@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nikeshwalia.github.io/sitemap.xml

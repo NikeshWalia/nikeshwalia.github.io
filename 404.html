@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — Nikesh Walia</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f6f6f7">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d0d0f'/%3E%3Ctext x='16' y='21.5' font-family='ui-monospace,monospace' font-size='13' font-weight='700' fill='%23fff' text-anchor='middle'%3ENW%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/app.css">
+<script>
+  (function () {
+    try {
+      var p = localStorage.getItem('theme-preference') || 'system';
+      var dark = p === 'dark' || (p === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    } catch (e) {}
+  })();
+</script>
+<style>
+  .nf { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: var(--s-8); }
+  .nf-code {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono);
+    letter-spacing: var(--tr-wide);
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: var(--s-5);
+  }
+  .nf h1 { font-size: var(--t-2xl); font-weight: 600; letter-spacing: var(--tr-tight); }
+  .nf p { margin-top: var(--s-4); color: var(--text-2); max-width: 46ch; margin-inline: auto; }
+  .nf .actions { display: flex; gap: var(--s-3); justify-content: center; margin-top: var(--s-8); flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="nf">
+  <div>
+    <div class="nf-code">Error 404 · Not found</div>
+    <h1>This test case doesn't exist.</h1>
+    <p>The page you asked for isn't here. That's a genuine 404, not a redirect chain — I checked.</p>
+    <div class="actions">
+      <a href="/" class="btn btn--primary">Back to the portfolio</a>
+      <a href="/#contact" class="btn btn--ghost">Get in touch</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

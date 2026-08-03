@@ -1,0 +1,200 @@
+/* ==========================================================================
+   Self-hosted fonts (latin subset, woff2).
+   Served from the same origin, so there is no third-party DNS lookup, TLS
+   handshake or render-blocking stylesheet from fonts.googleapis.com —
+   which was costing ~1.3s of blocking time before first paint.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/InterTight-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+                 U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/InterTight-500.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+                 U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/InterTight-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+                 U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/JetBrainsMono-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+                 U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/JetBrainsMono-500.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+                 U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Metric-adjusted fallback. Keeps the swap from shifting layout while the
+   webfont loads — this is what holds CLS at 0. */
+@font-face {
+  font-family: 'Inter Tight Fallback';
+  src: local('Arial');
+  ascent-override: 96%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
+}
+
+/* ==========================================================================
+   Design tokens — the single source of truth for the visual system.
+   Nothing below this file hard-codes a colour, size, easing or duration.
+   ========================================================================== */
+
+:root {
+  /* ---- Type ------------------------------------------------------------ */
+  /* The metric-adjusted fallback sits second so the pre-swap frame renders
+     with Inter Tight's metrics — that, not luck, is what holds CLS at 0. */
+  --font-sans: 'Inter Tight', 'Inter Tight Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Mono', monospace;
+
+  /* Fluid scale, 1.200 minor-third at the low end opening to 1.333 */
+  --t-mono:  0.75rem;
+  --t-xs:    0.8125rem;
+  --t-sm:    0.875rem;
+  --t-base:  0.9375rem;
+  --t-md:    1.0625rem;
+  --t-lg:    clamp(1.125rem, 0.4vw + 1rem, 1.3125rem);
+  --t-xl:    clamp(1.5rem,  1.1vw + 1.1rem, 2rem);
+  --t-2xl:   clamp(2rem,    2.4vw + 1.2rem, 3rem);
+  --t-3xl:   clamp(2.5rem,  3.6vw + 1rem,   4rem);
+
+  --lh-tight: 1.05;
+  --lh-snug:  1.28;
+  --lh-body:  1.62;
+
+  --tr-tight: -0.035em;
+  --tr-snug:  -0.02em;
+  --tr-wide:  0.08em;
+
+  /* ---- Space (4px base) ------------------------------------------------ */
+  --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+  --s-5: 20px;  --s-6: 24px;  --s-8: 32px;  --s-10: 40px;
+  --s-12: 48px; --s-16: 64px; --s-20: 80px; --s-24: 96px;
+  --s-section: clamp(72px, 8.5vw, 132px);
+
+  /* ---- Layout ---------------------------------------------------------- */
+  --wrap: 1180px;
+  --gutter: clamp(20px, 4vw, 48px);
+  --rail: 148px;              /* mono label column, docs-style */
+  --header-h: 60px;
+
+  /* ---- Radius ---------------------------------------------------------- */
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px; --r-full: 999px;
+
+  /* ---- Motion ---------------------------------------------------------- */
+  --e-out:   cubic-bezier(.22, 1, .36, 1);      /* entrances */
+  --e-inout: cubic-bezier(.4, 0, .2, 1);        /* state changes */
+  --d-fast: 120ms;
+  --d-base: 220ms;
+  --d-slow: 620ms;
+  --stagger: 55ms;
+
+  /* ---- Light theme ----------------------------------------------------- */
+  --bg:        #f6f6f7;
+  --bg-elev:   #ffffff;
+  --bg-sunken: #efeff1;
+  --bg-code:   #fbfbfc;
+
+  --text:   #0d0d0f;
+  --text-2: #55585f;
+  /* 4.6:1 on --bg #f6f6f7 and ~5:1 on white. The previous #83868d measured
+     3.38:1 — the light ramp never got the audit the dark ramp did. */
+  --text-3: #6b6e75;
+
+  --selection: rgba(75, 75, 219, .14);
+
+  --line:   #e3e3e6;
+  --line-2: #d3d4d8;
+
+  --accent:      #4b4bdb;
+  --accent-text: #3f3fc4;
+  --accent-weak: rgba(75, 75, 219, .09);
+  --on-accent:   #ffffff;
+
+  --pass: #0f7b46;
+  --fail: #c02626;
+  --warn: #9a6200;
+
+  --glow: rgba(75, 75, 219, .16);
+
+  --shadow-1: 0 1px 2px rgba(13,13,15,.06), 0 1px 1px rgba(13,13,15,.04);
+  --shadow-2: 0 2px 4px rgba(13,13,15,.05), 0 8px 20px -6px rgba(13,13,15,.12);
+  --shadow-3: 0 8px 24px -8px rgba(13,13,15,.18), 0 24px 56px -16px rgba(13,13,15,.20);
+
+  color-scheme: light;
+}
+
+/* ---- Dark theme --------------------------------------------------------
+   Not an inversion. Backgrounds are near-black with a cool cast, text is
+   held below pure white to cut halation, and the accent is lifted in
+   lightness so it keeps contrast against a dark field.
+   ---------------------------------------------------------------------- */
+[data-theme='dark'] {
+  --bg:        #08090a;
+  --bg-elev:   #0f1012;
+  --bg-sunken: #050506;
+  --bg-code:   #0c0d0f;
+
+  --text:   #f2f3f4;
+  --text-2: #9ca0a7;
+  /* 4.5:1 against --bg (#08090a) at 12px. #6a6e75 measured 3.89:1 and failed
+     WCAG AA on every mono label on the page. */
+  --text-3: #8b9099;
+
+  /* At 12% alpha over near-black, selection was a ~3% luminance change —
+     invisible. Dark needs a stronger token, not the light one inverted. */
+  --selection: rgba(155, 155, 251, .30);
+
+  --line:   #1c1e21;
+  --line-2: #2a2d31;
+
+  --accent:      #9b9bfb;
+  --accent-text: #b3b3fc;
+  --accent-weak: rgba(155, 155, 251, .12);
+  --on-accent:   #0b0b16;
+
+  --pass: #4ec98a;
+  --fail: #ff8080;
+  --warn: #ffc247;
+
+  --glow: rgba(155, 155, 251, .22);
+
+  --shadow-1: 0 1px 2px rgba(0,0,0,.5);
+  --shadow-2: 0 2px 4px rgba(0,0,0,.5), 0 8px 20px -6px rgba(0,0,0,.6);
+  --shadow-3: 0 8px 24px -8px rgba(0,0,0,.7), 0 24px 56px -16px rgba(0,0,0,.8);
+
+  color-scheme: dark;
+}
