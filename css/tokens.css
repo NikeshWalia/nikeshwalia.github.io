@@ -103,7 +103,10 @@
   --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
   --s-5: 20px;  --s-6: 24px;  --s-8: 32px;  --s-10: 40px;
   --s-12: 48px; --s-16: 64px; --s-20: 80px; --s-24: 96px;
-  --s-section: clamp(72px, 8.5vw, 132px);
+  /* Sections carry this on BOTH edges, so adjacent sections stack it —
+     the cap must be sized for the doubled seam (~176px), not one edge.
+     132px was producing ~270px voids between sections at wide viewports. */
+  --s-section: clamp(56px, 6vw, 88px);
 
   /* ---- Layout ---------------------------------------------------------- */
   --wrap: 1180px;

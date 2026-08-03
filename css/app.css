@@ -90,8 +90,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .section { padding-block: var(--s-section); border-top: 1px solid var(--line); }
 /* Follows the hero directly, so it needs no divider and less air above it —
-   the hero already carries its own generous bottom padding. */
-.section--tight { border-top: 0; padding-top: var(--s-4); }
+   the hero already carries its own generous bottom padding. A slim band gets
+   slim padding on both edges, not just the top. */
+.section--tight { border-top: 0; padding-block: var(--s-6) var(--s-16); }
 .section-head { margin-bottom: var(--s-12); }
 
 .h-section {
@@ -438,21 +439,18 @@ kbd {
 
 .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-8); }
 
+/* No drawn separators at all: whichever element a dot is attached to, a wrap
+   strands it at a line edge — trailing on the previous item or leading on the
+   next. Self-contained items with a wide gap need no punctuation. */
 .hero-meta {
-  display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5);
+  display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-8);
   margin-top: var(--s-8); padding-top: var(--s-6);
   border-top: 1px solid var(--line);
   font-family: var(--font-mono);
   font-size: var(--t-mono);
   color: var(--text-3);
 }
-.hero-meta span { display: inline-flex; align-items: center; gap: var(--s-5); }
-/* Separator belongs to the item that follows it, so it disappears with the
-   item when the row wraps — no orphaned bullet at a line end. */
-.hero-meta span + span::before {
-  content: '·';
-  color: var(--text-3);
-}
+.hero-meta span { display: inline-flex; align-items: center; }
 
 /* --------------------------------------------------------------------------
    Pipeline diagram — a model of how the suite runs, not fabricated log output.
@@ -1022,10 +1020,7 @@ kbd {
 
 @media (max-width: 560px) {
   .caps { grid-template-columns: minmax(0, 1fr); }
-  /* Inline separators can't survive a wrap in either direction — leading or
-     trailing, one line always gets an orphan bullet. Stack instead. */
   .hero-meta { flex-direction: column; align-items: flex-start; gap: var(--s-2); }
-  .hero-meta span + span::before { content: none; }
   /* Wrapped stage notes: anchor bullet, name and value to the first line. */
   .stage { align-items: start; }
   .stage-val { padding-top: 3px; }
