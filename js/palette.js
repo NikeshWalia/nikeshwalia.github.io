@@ -68,7 +68,7 @@ export function init() {
     }));
 
     const actions = [
-      { group: 'Actions', icon: 'file',  title: 'Download résumé (PDF)', sub: 'Nikesh_CV.pdf', run: download },
+      { group: 'Actions', icon: 'file',  title: 'Download resume (PDF)', sub: 'Nikesh_CV.pdf', run: download },
       { group: 'Actions', icon: 'mail',  title: 'Send an email',         sub: 'nikeshwalia@gmail.com', run: () => { location.href = 'mailto:nikeshwalia@gmail.com'; } },
       { group: 'Actions', icon: 'copy',  title: 'Copy email address',    sub: 'nikeshwalia@gmail.com', run: () => copyValue('nikeshwalia@gmail.com') },
       { group: 'Actions', icon: 'copy',  title: 'Copy phone number',     sub: '+91 62396 77566', run: () => copyValue('+916239677566') },
