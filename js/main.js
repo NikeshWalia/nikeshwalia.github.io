@@ -7,12 +7,14 @@
 import * as theme from './theme.js';
 import * as palette from './palette.js';
 import {
-  initReveal, initHeader, initSpotlight, initRevealGlow,
-  initPipeline, initCaseToggles, initKeycaps, initClipboard, toast,
+  initReveal, initHeader, initSpotlight, initRevealGlow, initProgress,
+  initPipeline, initCaseToggles, initKeycaps, initClipboard,
+  initThemeSwitchKeys, toast,
 } from './ui.js';
 
 theme.init();
 initHeader();
+initProgress();
 initReveal();
 initSpotlight();
 initRevealGlow();
@@ -20,15 +22,23 @@ initPipeline();
 initCaseToggles();
 initKeycaps();
 initClipboard();
-palette.init();
+initThemeSwitchKeys((pref) => theme.set(pref));
+
+// Keep the handle: other code should ask the palette whether it is open
+// rather than sniffing the DOM for its data attribute.
+const cmdk = palette.init();
 
 /* Year in the footer, so the page never goes stale. */
 const year = document.querySelector('[data-year]');
 if (year) year.textContent = String(new Date().getFullYear());
 
-/* Single-key shortcuts, ignored while the user is typing. */
+/* Single-key shortcuts, ignored while typing or while a dialog is open. */
 document.addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+  // A modal owns the keyboard while it is open: otherwise a single-key
+  // shortcut fires on characters the user believes they are typing into it.
+  if (cmdk?.isOpen()) return;
 
   const el = document.activeElement;
   const typing = el instanceof HTMLElement &&

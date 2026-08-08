@@ -1,6 +1,9 @@
 /* ==========================================================================
-   app.css — base, layout primitives, components, sections.
-   Depends on tokens.css. No literal colours or durations below this line.
+   app.css: base, layout primitives, components, sections.
+   Depends on tokens.css. Colours and durations come from tokens, with two
+   deliberate exceptions: the dark-mode inset highlight (a hairline alpha
+   white that is not a palette colour) and the print block (which targets
+   physical paper, not either theme).
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -58,6 +61,70 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .skip:focus { transform: none; }
 
 /* --------------------------------------------------------------------------
+   Ambient layers: mesh, grain, scroll progress.
+
+   The page has three stacked backdrops: a slow drifting colour mesh, a fixed
+   film grain, and the content. Grain is the piece that stops large gradient
+   fields reading as flat CSS: it breaks up the banding that 8-bit gradients
+   produce and gives the surface a physical quality.
+   -------------------------------------------------------------------------- */
+.mesh {
+  position: absolute;
+  inset: -25% -15%;
+  z-index: -3;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 44% at 78% 12%, var(--mesh-1), transparent 62%),
+    radial-gradient(34% 40% at 12% 68%, var(--mesh-2), transparent 66%),
+    radial-gradient(30% 36% at 55% 92%, var(--mesh-3), transparent 66%);
+  animation: mesh-drift 34s var(--e-inout) infinite alternate;
+  will-change: transform;
+}
+@keyframes mesh-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(-3%, 3%, 0) scale(1.12); }
+}
+
+/* One fixed grain plane for the whole document rather than per-section, so
+   the texture never shifts relative to the viewport while scrolling. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--grain-o);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+
+/* Scroll progress: a 2px gradient rule pinned under the header. */
+.progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 100%;
+  z-index: 120;
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+  background: var(--grad);
+  pointer-events: none;
+}
+
+/* Gradient display text. -webkit-text-fill-color is the only cross-browser
+   way to clip a gradient to glyphs; the colour fallback below it is what
+   renders if background-clip:text is unsupported. */
+.grad-text {
+  color: var(--accent-text);
+  background: var(--grad);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .grad-text { -webkit-text-fill-color: currentColor; }
+}
+
+/* --------------------------------------------------------------------------
    Layout primitives
    -------------------------------------------------------------------------- */
 .wrap {
@@ -82,17 +149,18 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: var(--text-3);
   padding-top: var(--s-2);
 }
-/* Text colours must come from the text ramp, never the border ramp —
-   --line-2 as a foreground measured 1.44:1. */
+/* Text colours must come from the text ramp, never the border ramp: --line-2 as a foreground measured 1.44:1. */
 /* No opacity here: it composites a passing token down to 3.19:1. Hierarchy
    comes from position and casing instead. */
 .rail-label span { display: block; color: var(--text-3); margin-bottom: var(--s-1); }
 
 .section { padding-block: var(--s-section); border-top: 1px solid var(--line); }
-/* Follows the hero directly, so it needs no divider and less air above it —
-   the hero already carries its own generous bottom padding. A slim band gets
+/* Follows the hero directly, so it needs no divider and less air above it: the hero already carries its own generous bottom padding. A slim band gets
    slim padding on both edges, not just the top. */
-.section--tight { border-top: 0; padding-block: var(--s-5) var(--s-12); }
+/* Removing the hero's keyboard hint shortened that column, which pulled the
+   Impact band up tight against it. Restore the separation on this band
+   rather than re-padding the hero, so the hero's own rhythm is untouched. */
+.section--tight { border-top: 0; padding-block: var(--s-20) var(--s-12); }
 .section-head { margin-bottom: var(--s-12); }
 
 .h-section {
@@ -111,7 +179,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 /* --------------------------------------------------------------------------
-   Components — buttons
+   Components: buttons
    -------------------------------------------------------------------------- */
 .btn {
   --btn-bg: transparent;
@@ -120,8 +188,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   align-items: center;
   justify-content: center;
   gap: var(--s-2);
-  height: 42px;
-  padding-inline: var(--s-5);
+  height: 48px;
+  padding-inline: var(--s-6);
   border-radius: var(--r-md);
   background: var(--btn-bg);
   color: var(--btn-fg);
@@ -135,10 +203,31 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
               transform var(--d-fast) var(--e-inout);
 }
 .btn svg { width: 15px; height: 15px; flex: none; }
-.btn:active { transform: translateY(1px); }
 
-.btn--primary { --btn-bg: var(--text); --btn-fg: var(--bg-elev); }
-.btn--primary:hover { box-shadow: var(--shadow-2); opacity: .92; }
+/* Press feedback. :hover never fires on touch, so without :active the
+   majority device gets no acknowledgement that a tap registered. Instant in,
+   eased out: the asymmetry is what makes a press feel responsive rather
+   than laggy. Deliberately OUTSIDE the reduced-motion block: this is
+   feedback, not decoration, and that block already neutralises the easing. */
+.btn:active { transform: scale(.975); transition-duration: 0ms; }
+
+.stage:active,
+.channel:active,
+.cmdk-item:active,
+.case-detail > summary:active,
+.theme-switch button:active,
+.icon-btn:active,
+.nav a:active,
+.cmd-trigger:active { transform: scale(.985); transition-duration: 0ms; }
+
+/* The one gradient-filled control on the page. Reserving the gradient for a
+   single primary action is what keeps it feeling deliberate. */
+.btn--primary {
+  --btn-fg: var(--on-accent);
+  background: var(--grad);
+  box-shadow: 0 8px 22px -10px var(--glow);
+}
+.btn--primary:hover { box-shadow: 0 14px 30px -10px var(--glow); filter: brightness(1.07); }
 
 .btn--ghost {
   border: 1px solid var(--line-2);
@@ -150,7 +239,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .btn--quiet:hover { --btn-fg: var(--text); background: var(--bg-sunken); }
 
 /* --------------------------------------------------------------------------
-   Reveal highlight — the Fluent interaction. A pointer-tracked radial glow
+   Reveal highlight: the Fluent interaction. A pointer-tracked radial glow
    on card borders (::before, masked to the 1px ring) and a fainter surface
    wash (::after). JS sets --rvl-x/--rvl-y per card, rAF-coalesced; opacity
    fades in only while the pointer is inside the card's scope.
@@ -190,7 +279,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 /* --------------------------------------------------------------------------
-   Components — chips, kbd, meta
+   Components: chips, kbd, meta
    -------------------------------------------------------------------------- */
 .chip {
   display: inline-flex;
@@ -208,14 +297,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 kbd {
   display: inline-grid;
   place-items: center;
-  min-width: 19px; height: 19px;
-  padding-inline: 5px;
+  min-width: 21px; height: 21px;
+  padding-inline: 6px;
   border: 1px solid var(--line-2);
   border-bottom-width: 2px;
   border-radius: var(--r-sm);
   background: var(--bg-elev);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--t-micro);
   color: var(--text-2);
 }
 
@@ -245,35 +334,36 @@ kbd {
 
 .brand {
   display: flex; align-items: center; gap: var(--s-3);
-  font-weight: 600; letter-spacing: var(--tr-snug);
-  font-size: var(--t-sm);
+  font-weight: 700; letter-spacing: var(--tr-snug);
+  font-size: var(--t-md);
   flex: none;
 }
 /* Weight and tracking match the favicon so the two marks read as one system.
-   No negative letter-spacing — at 12px it made the N and W collide. */
+   No negative letter-spacing: at 12px it made the N and W collide. */
 .brand-mark {
   display: grid; place-items: center;
-  width: 28px; height: 28px;
-  border-radius: var(--r-sm);
+  width: 34px; height: 34px;
+  border-radius: var(--r-md);
   background: var(--text); color: var(--bg-elev);
   font-family: var(--font-mono);
-  font-size: 12px; font-weight: 700;
+  font-size: 13px; font-weight: 700;
   line-height: 1;
 }
 
 .nav { position: relative; margin-left: auto; display: flex; align-items: center; gap: var(--s-1); }
 .nav a {
   position: relative;
-  padding: var(--s-2) var(--s-3);
-  border-radius: var(--r-sm);
-  font-size: var(--t-xs);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  font-size: var(--t-sm);
+  font-weight: 500;
   color: var(--text-2);
   transition: color var(--d-fast) var(--e-inout), background var(--d-fast) var(--e-inout);
 }
 .nav a:hover { color: var(--text); background: var(--bg-sunken); }
 .nav a[aria-current='location'] { color: var(--text); }
 
-/* Sliding ink — one underline that travels between links instead of five
+/* Sliding ink: one underline that travels between links instead of five
    underlines that blink on and off. JS positions it via transform. */
 .nav-ink {
   position: absolute;
@@ -292,42 +382,49 @@ kbd {
 
 .icon-btn {
   display: grid; place-items: center;
-  width: 32px; height: 32px;
-  border-radius: var(--r-sm);
+  width: 38px; height: 38px;
+  border-radius: var(--r-md);
   color: var(--text-2);
   transition: color var(--d-fast) var(--e-inout), background var(--d-fast) var(--e-inout);
 }
 .icon-btn:hover { color: var(--text); background: var(--bg-sunken); }
-.icon-btn svg { width: 16px; height: 16px; }
+.icon-btn svg { width: 18px; height: 18px; }
 
-/* Palette entry point for narrow screens — replaces both nav and search. */
+/* Palette entry point for narrow screens: replaces both nav and search. */
 .icon-btn--search { display: none; border: 1px solid var(--line); }
 
 .cmd-trigger {
   display: inline-flex; align-items: center; gap: var(--s-2);
-  height: 32px; padding-inline: var(--s-3);
+  height: 38px; padding-inline: var(--s-4);
   border: 1px solid var(--line);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-md);
   background: var(--bg-elev);
-  font-size: var(--t-xs);
+  font-size: var(--t-sm);
   color: var(--text-3);
   transition: border-color var(--d-fast) var(--e-inout), color var(--d-fast) var(--e-inout);
 }
 .cmd-trigger:hover { border-color: var(--line-2); color: var(--text-2); }
-.cmd-trigger svg { width: 13px; height: 13px; }
+.cmd-trigger svg { width: 15px; height: 15px; }
 
-/* Theme control — three-state, matching how Linear and GitHub do it. */
+/* Theme control: three-state, matching how Linear and GitHub do it. */
 .theme-switch { display: flex; gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--bg-elev); }
 .theme-switch button {
   display: grid; place-items: center;
-  width: 26px; height: 26px;
-  border-radius: 4px;
+  width: 30px; height: 30px;
+  border-radius: 6px;
   color: var(--text-3);
   transition: color var(--d-fast) var(--e-inout), background var(--d-fast) var(--e-inout);
 }
-.theme-switch button svg { width: 14px; height: 14px; }
+.theme-switch button svg { width: 16px; height: 16px; }
 .theme-switch button:hover { color: var(--text-2); }
-.theme-switch button[aria-pressed='true'] { background: var(--bg-sunken); color: var(--text); }
+/* aria-checked now (radiogroup). A background tint alone measured 1.07:1 on
+   dark: invisible as a state cue under WCAG 1.4.11. The inset ring is a
+   second channel that survives both themes. */
+.theme-switch button[aria-checked='true'] {
+  background: var(--bg-sunken);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+}
 
 /* --------------------------------------------------------------------------
    Hero
@@ -368,7 +465,7 @@ kbd {
   align-items: center;
 }
 
-/* Aurora — two large soft gradients drifting on the compositor. Slow enough
+/* Aurora: two large soft gradients drifting on the compositor. Slow enough
    (~52s) to register as atmosphere, not animation; hidden under
    prefers-reduced-motion along with everything else. */
 .aurora {
@@ -440,27 +537,42 @@ kbd {
 .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-8); }
 
 /* No drawn separators at all: whichever element a dot is attached to, a wrap
-   strands it at a line edge — trailing on the previous item or leading on the
+   strands it at a line edge: trailing on the previous item or leading on the
    next. Self-contained items with a wide gap need no punctuation. */
 .hero-meta {
-  display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-8);
+  display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-8);
   margin-top: var(--s-8); padding-top: var(--s-6);
+  line-height: 1.9;
   border-top: 1px solid var(--line);
   font-family: var(--font-mono);
   font-size: var(--t-mono);
-  color: var(--text-3);
+  /* --text-2, not --text-3: this line carries location, availability and
+     education, which are among the first things a recruiter looks for. */
+  color: var(--text-2);
 }
-.hero-meta span { display: inline-flex; align-items: center; }
+/* NOT inline-flex: that promotes the text nodes and <strong> inside each
+   span to flex items, and whitespace between flex items is discarded, so
+   emphasised words ran into the words beside them ("since**Jan 2025**"). */
+.hero-meta span { display: inline; }
 
 /* --------------------------------------------------------------------------
-   Pipeline diagram — a model of how the suite runs, not fabricated log output.
+   Pipeline diagram: a model of how the suite runs, not fabricated log output.
    -------------------------------------------------------------------------- */
 .pipeline {
+  position: relative;
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   background: var(--bg-elev);
-  box-shadow: var(--shadow-2);
+  box-shadow: var(--glow-card-hi);
   overflow: hidden;
+}
+/* Accent hairline across the top, matching the lead bento tile. */
+.pipeline::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: var(--grad);
 }
 .pipeline-head {
   display: flex; align-items: center; gap: var(--s-3);
@@ -497,12 +609,12 @@ kbd {
   background: var(--line);
 }
 /* The explored stage */
-.stage[aria-pressed='true'] .stage-bullet {
+.stage[aria-selected='true'] .stage-bullet {
   border-color: var(--accent);
   color: var(--accent-text);
   background: var(--accent-weak);
 }
-.stage[aria-pressed='true'] .stage-name { color: var(--accent-text); }
+.stage[aria-selected='true'] .stage-name { color: var(--accent-text); }
 
 .pipeline-detail {
   margin: 0;
@@ -510,7 +622,7 @@ kbd {
   font-size: var(--t-xs);
   line-height: 1.55;
   color: var(--text-2);
-  min-height: 3.2em; /* two lines reserved — switching stages never reflows the card */
+  min-height: 3.2em; /* two lines reserved: switching stages never reflows the card */
   text-wrap: pretty;
 }
 .stage-bullet {
@@ -521,7 +633,7 @@ kbd {
   border: 1px solid var(--line-2);
   background: var(--bg-elev);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--t-micro);
   color: var(--text-3);
 }
 .stage[data-state='pass'] .stage-bullet { border-color: var(--pass); color: var(--pass); }
@@ -552,7 +664,7 @@ kbd {
 
 .pipeline-foot {
   display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5);
-  justify-content: space-between; /* two stats, articulated — not a run-on line */
+  justify-content: space-between; /* two stats, articulated: not a run-on line */
   padding: var(--s-3) var(--s-4);
   border-top: 1px solid var(--line);
   background: var(--bg-code);
@@ -564,6 +676,75 @@ kbd {
 /* --------------------------------------------------------------------------
    Proof strip
    -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Bento grid: mixed-weight cards on a 6-column field. Varying the tile size
+   is what stops a stats row reading as a spreadsheet: the eye gets a clear
+   first stop (the hero figure) instead of three equal claims competing.
+   -------------------------------------------------------------------------- */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--s-4);
+}
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(20px, 2.2vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-elev);
+  box-shadow: var(--glow-card);
+  overflow: hidden;
+  transition: transform var(--d-base) var(--e-out),
+              box-shadow var(--d-base) var(--e-out),
+              border-color var(--d-base) var(--e-out);
+}
+.tile:hover { transform: translateY(-3px); box-shadow: var(--glow-card-hi); }
+
+.tile--hero  { grid-column: span 2; grid-row: span 2; justify-content: space-between; }
+.tile--stat  { grid-column: span 2; }
+.tile--wide  { grid-column: span 4; }
+.tile--half  { grid-column: span 3; }
+
+/* A hairline of accent along the top edge of the lead tile. */
+.tile--hero::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: var(--grad);
+}
+
+.tile-n {
+  font-size: clamp(2.5rem, 4.5vw, 4rem);
+  font-weight: 600;
+  letter-spacing: var(--tr-tight);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.tile--stat .tile-n { font-size: clamp(1.875rem, 2.6vw, 2.5rem); }
+.tile-l { margin-top: var(--s-3); color: var(--text-2); font-size: var(--t-base); line-height: 1.55; text-wrap: pretty; }
+.tile-src {
+  margin-top: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: var(--t-micro);
+  letter-spacing: .04em;
+  color: var(--text-3);
+}
+.tile-k {
+  font-family: var(--font-mono);
+  font-size: var(--t-mono);
+  letter-spacing: var(--tr-wide);
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: var(--s-4);
+}
+.tile-cluster { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.tile-row { display: flex; align-items: baseline; gap: var(--s-3); margin-top: var(--s-2); }
+.tile-row dt { font-size: var(--t-xs); color: var(--text-3); min-width: 74px; }
+.tile-row dd { font-size: var(--t-sm); color: var(--text); margin: 0; }
+
 .proof { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-8); }
 .proof-item { position: relative; padding-left: var(--s-5); border-left: 1px solid var(--line); }
 .proof-n {
@@ -577,7 +758,7 @@ kbd {
 .proof-src {
   margin-top: var(--s-2);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--t-micro);
   color: var(--text-3);
   letter-spacing: .02em;
 }
@@ -591,10 +772,13 @@ kbd {
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   background: var(--bg-elev);
+  box-shadow: var(--glow-card);
   overflow: hidden;
-  transition: border-color var(--d-base) var(--e-inout), box-shadow var(--d-base) var(--e-inout);
+  transition: border-color var(--d-base) var(--e-out),
+              box-shadow var(--d-base) var(--e-out),
+              transform var(--d-base) var(--e-out);
 }
-.case:hover { border-color: var(--line-2); box-shadow: var(--shadow-2); }
+.case:hover { border-color: var(--line-2); box-shadow: var(--glow-card-hi); transform: translateY(-3px); }
 
 .case-head {
   display: grid;
@@ -614,17 +798,16 @@ kbd {
 }
 .case-idx b { color: var(--accent-text); font-weight: 500; }
 .case h3 { font-size: var(--t-lg); font-weight: 600; letter-spacing: var(--tr-snug); text-wrap: balance; }
-.case-sum { margin-top: var(--s-3); max-width: 58ch; color: var(--text-2); font-size: var(--t-sm); text-wrap: pretty; }
+.case-sum { margin-top: var(--s-3); max-width: 58ch; color: var(--text-2); font-size: var(--t-base); line-height: 1.62; text-wrap: pretty; }
 
 .case-stack { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-5); }
 
 /* --------------------------------------------------------------------------
-   Case artifacts — the thing each system actually produces, drawn compactly.
+   Case artifacts: the thing each system actually produces, drawn compactly.
    These fill the card's second column so the Work section shows work.
    -------------------------------------------------------------------------- */
 .artifact {
-  border: 1px solid var(--border, var(--line));
-  border-color: var(--line);
+  border: 1px solid var(--line);
   border-radius: var(--r-md);
   background: var(--bg-code);
   font-family: var(--font-mono);
@@ -641,7 +824,7 @@ kbd {
   color: var(--text-2);
 }
 .artifact-head span {
-  font-size: 10px;
+  font-size: var(--t-micro);
   letter-spacing: var(--tr-wide);
   text-transform: uppercase;
   color: var(--text-3);
@@ -663,7 +846,7 @@ kbd {
   padding: var(--s-3) var(--s-4);
   border-top: 1px solid var(--line);
   color: var(--text-3);
-  font-size: 10px;
+  font-size: var(--t-micro);
   letter-spacing: .02em;
 }
 .artifact--stat { text-align: left; }
@@ -707,7 +890,7 @@ kbd {
 .case-detail[open] > summary .lbl-open { display: none; }
 .case-detail[open] > summary .lbl-close { display: inline; }
 
-/* Fixed 2x2 — auto-fit resolved to three columns here and stranded the
+/* Fixed 2x2: auto-fit resolved to three columns here and stranded the
    fourth block on its own row (the same bug fixed in .caps earlier). */
 .case-body {
   display: grid;
@@ -735,7 +918,8 @@ kbd {
   position: relative;
   padding-left: var(--s-4);
   margin-bottom: var(--s-2);
-  font-size: var(--t-sm);
+  font-size: var(--t-base);
+  line-height: 1.6;
   color: var(--text-2);
   text-wrap: pretty;
 }
@@ -769,7 +953,8 @@ kbd {
 .role ul { margin-top: var(--s-4); display: grid; gap: var(--s-2); }
 .role li {
   position: relative; padding-left: var(--s-4);
-  font-size: var(--t-sm); color: var(--text-2);
+  font-size: var(--t-base); color: var(--text-2);
+  line-height: 1.62;
   text-wrap: pretty;
 }
 .role li::before {
@@ -779,23 +964,25 @@ kbd {
 .role li strong { color: var(--text); font-weight: 500; }
 
 /* --------------------------------------------------------------------------
-   Capabilities — evidence, not badges
+   Capabilities: evidence, not badges
    -------------------------------------------------------------------------- */
 /* Fixed 2x2 rather than auto-fit. With exactly four cards, auto-fit resolves
    to three columns at this width and strands the fourth on its own row. */
 .caps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
 .cap {
-  padding: var(--s-5);
+  padding: var(--s-6);
   border: 1px solid var(--line);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   background: var(--bg-elev);
-  transition: border-color var(--d-base) var(--e-inout);
+  box-shadow: var(--glow-card);
+  transition: border-color var(--d-base) var(--e-out),
+              box-shadow var(--d-base) var(--e-out),
+              transform var(--d-base) var(--e-out);
 }
-.cap:hover { border-color: var(--line-2); }
-/* Real titles, not footnote-grade micro-labels — the mono-uppercase voice is
+.cap:hover { border-color: var(--line-2); box-shadow: var(--glow-card-hi); transform: translateY(-3px); }
+/* Real titles, not footnote-grade micro-labels: the mono-uppercase voice is
    reserved for metadata, which also stops Work and Capabilities from
    rendering as the same repeating card texture. */
-.cap { display: flex; flex-direction: column; }
 .cap h3 {
   font-size: var(--t-md);
   font-weight: 600;
@@ -805,7 +992,7 @@ kbd {
 .cap-list { margin-top: var(--s-4); display: flex; flex-wrap: wrap; gap: var(--s-2); }
 /* One chip voice site-wide: mono, matching the Work stacks. */
 .cap-list .chip { font-family: var(--font-mono); font-size: var(--t-mono); }
-.cap-list { margin-bottom: var(--s-4); }
+
 .cap-evidence {
   margin-top: auto; /* pins to the card bottom so dashed rules align across a row */
   padding-top: var(--s-4);
@@ -822,6 +1009,7 @@ kbd {
 .cta {
   position: relative;
   isolation: isolate;
+  box-shadow: var(--glow-card);
   padding: clamp(40px, 6vw, 76px);
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
@@ -836,7 +1024,7 @@ kbd {
 .cta h2 {
   font-size: var(--t-2xl);
   font-weight: 600;
-  line-height: var(--lh-snug); /* was inheriting body 1.62 — display type at paragraph leading */
+  line-height: var(--lh-snug); /* was inheriting body 1.62: display type at paragraph leading */
   letter-spacing: var(--tr-tight);
   text-wrap: balance;
 }
@@ -865,19 +1053,93 @@ kbd {
 /* --------------------------------------------------------------------------
    Footer
    -------------------------------------------------------------------------- */
-.footer { padding-block: var(--s-10); border-top: 1px solid var(--line); }
-.footer-inner {
-  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4);
+.footer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: clamp(56px, 7vw, 96px) var(--s-8);
+  border-top: 1px solid var(--line);
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(40px, 5vw, 80px);
+  align-items: start;
+  padding-bottom: clamp(40px, 5vw, 64px);
+}
+.footer-claim {
+  font-size: clamp(1.75rem, 3.4vw, 3rem);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-tight);
+  text-wrap: balance;
+}
+.footer-cta { margin-top: var(--s-8); }
+
+/* Social rows: full-width targets rather than a cramped icon strip, so each
+   is a comfortable tap area and can carry a label plus the actual handle: a recruiter should not have to hover to find out where a link goes. */
+.footer-socials { display: grid; gap: var(--s-2); }
+.social {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--bg-elev);
+  transition: border-color var(--d-fast) var(--e-out),
+              transform var(--d-fast) var(--e-out),
+              box-shadow var(--d-fast) var(--e-out);
+}
+.social:hover {
+  border-color: transparent;
+  transform: translateX(4px);
+  box-shadow: var(--glow-card);
+}
+.social:active { transform: translateX(4px) scale(.99); transition-duration: 0ms; }
+.social-ico {
+  display: grid; place-items: center;
+  width: 38px; height: 38px;
+  border-radius: var(--r-sm);
+  background: var(--accent-weak);
+  color: var(--accent-text);
+  flex: none;
+}
+.social-ico svg { width: 18px; height: 18px; }
+.social-body { min-width: 0; }
+.social-k {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--t-micro);
+  letter-spacing: var(--tr-wide);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.social-v { display: block; font-size: var(--t-sm); color: var(--text); }
+.social-go {
+  width: 16px; height: 16px;
+  margin-left: auto;
+  flex: none;
+  color: var(--text-3);
+  transition: color var(--d-fast) var(--e-out), transform var(--d-fast) var(--e-out);
+}
+.social:hover .social-go { color: var(--accent-text); transform: translate(2px, -2px); }
+
+.footer-base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--line);
   font-family: var(--font-mono);
   font-size: var(--t-mono);
   color: var(--text-3);
 }
-.footer-links { margin-left: auto; display: flex; flex-wrap: wrap; gap: var(--s-4); }
-.footer-links a {
-  padding: var(--s-2); /* tap area + optical breathing room */
-  transition: color var(--d-fast) var(--e-inout);
-}
-.footer-links a:hover { color: var(--text); }
+.footer-meta { margin-left: auto; }
+.footer-top-link { transition: color var(--d-fast) var(--e-inout); }
+.footer-top-link:hover { color: var(--text); }
 
 /* --------------------------------------------------------------------------
    Command palette
@@ -889,9 +1151,17 @@ kbd {
   background: color-mix(in srgb, var(--bg-sunken) 62%, transparent);
   backdrop-filter: blur(4px);
   opacity: 0; visibility: hidden;
-  transition: opacity var(--d-base) var(--e-inout), visibility var(--d-base);
+  /* visibility is stepped, not eased: 0s delayed by the fade when CLOSING,
+     0s immediate when OPENING. Transitioning it over the full duration left
+     the dialog visibility:hidden for the first frames after it opened, and
+     .focus() on a visibility:hidden element is a silent no-op: which is
+     what made the input unfocusable. Keep the two directions separate. */
+  transition: opacity var(--d-base) var(--e-inout), visibility 0s linear var(--d-base);
 }
-.cmdk[data-open='true'] { opacity: 1; visibility: visible; }
+.cmdk[data-open='true'] {
+  opacity: 1; visibility: visible;
+  transition: opacity var(--d-base) var(--e-inout), visibility 0s linear 0s;
+}
 
 .cmdk-panel {
   width: 100%; max-width: 560px;
@@ -923,7 +1193,7 @@ kbd {
 .cmdk-group {
   padding: var(--s-3) var(--s-3) var(--s-1);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--t-micro);
   letter-spacing: var(--tr-wide);
   text-transform: uppercase;
   color: var(--text-3);
@@ -939,7 +1209,12 @@ kbd {
 .cmdk-item svg { width: 15px; height: 15px; flex: none; color: var(--text-3); }
 .cmdk-item .t { flex: 1; min-width: 0; font-size: var(--t-sm); color: var(--text); }
 .cmdk-item .s { font-size: var(--t-xs); color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cmdk-item[data-active='true'] { background: var(--bg-sunken); }
+/* Tint alone is 1.15:1 light / 1.07:1 dark. The inset bar carries the
+   selection at full accent contrast regardless of theme. */
+.cmdk-item[data-active='true'] {
+  background: var(--bg-sunken);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
 .cmdk-item[data-active='true'] svg { color: var(--accent); }
 .cmdk-empty { padding: var(--s-8) var(--s-4); text-align: center; color: var(--text-3); font-size: var(--t-sm); }
 .cmdk-foot {
@@ -967,9 +1242,15 @@ kbd {
   font-size: var(--t-sm);
   transform: translate(-50%, 16px);
   opacity: 0; visibility: hidden;
-  transition: opacity var(--d-base) var(--e-out), transform var(--d-base) var(--e-out), visibility var(--d-base);
+  /* Same stepped-visibility pattern as .cmdk: the toast is an aria-live
+     region, and a mutation inside a visibility:hidden region is commonly
+     not announced at all. */
+  transition: opacity var(--d-base) var(--e-out), transform var(--d-base) var(--e-out), visibility 0s linear var(--d-base);
 }
-.toast[data-open='true'] { opacity: 1; transform: translate(-50%, 0); visibility: visible; }
+.toast[data-open='true'] {
+  opacity: 1; transform: translate(-50%, 0); visibility: visible;
+  transition: opacity var(--d-base) var(--e-out), transform var(--d-base) var(--e-out), visibility 0s linear 0s;
+}
 .toast svg { width: 15px; height: 15px; color: var(--pass); }
 
 /* --------------------------------------------------------------------------
@@ -991,11 +1272,11 @@ kbd {
 }
 
 /* --------------------------------------------------------------------------
-   Reveal — a single orchestrated entrance, staggered by index.
+   Reveal: a single orchestrated entrance, staggered by index.
    -------------------------------------------------------------------------- */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(16px);
   transition: opacity var(--d-slow) var(--e-out), transform var(--d-slow) var(--e-out);
   transition-delay: calc(var(--i, 0) * var(--stagger));
 }
@@ -1009,6 +1290,16 @@ kbd {
   .rail-label { padding-top: 0; }
   .hero-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-12); }
   .case-head { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  /* 6 -> 4 columns: the lead tile keeps its dominance, stats sit beside it. */
+  .bento { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tile--hero { grid-column: span 2; grid-row: span 2; }
+  .tile--stat { grid-column: span 2; }
+  .tile--wide, .tile--half { grid-column: span 4; }
+}
+
+@media (max-width: 860px) {
+  .footer-top { grid-template-columns: minmax(0, 1fr); gap: var(--s-10); }
+  .footer-meta { display: none; }
 }
 
 @media (max-width: 780px) {
@@ -1023,6 +1314,9 @@ kbd {
 
 @media (max-width: 560px) {
   .caps { grid-template-columns: minmax(0, 1fr); }
+  /* Single column: span/row rules must all be reset or tiles overlap. */
+  .bento { grid-template-columns: minmax(0, 1fr); }
+  .tile--hero, .tile--stat, .tile--wide, .tile--half { grid-column: span 1; grid-row: auto; }
   .hero-meta { flex-direction: column; align-items: flex-start; gap: var(--s-2); }
   /* Wrapped stage notes: anchor bullet, name and value to the first line. */
   .stage { align-items: start; }
@@ -1030,6 +1324,16 @@ kbd {
   .hero-actions .btn { width: 100%; }
   .footer-links { margin-left: 0; width: 100%; }
   .case-head, .case-stack, .case-body, .case-links, .case-detail > summary { padding-inline: var(--s-5); }
+}
+
+/* At 320px the three-up switch is 124px wide (3 x 38px coarse-pointer
+   targets) and its right edge lands 3px from the screen edge while every
+   other element respects a 20px gutter. Shrink the targets rather than hide
+   any: hiding the unchecked radios would leave no way to CHANGE theme by
+   tap. 32px still clears WCAG 2.2's 24px floor. */
+@media (max-width: 380px) {
+  .theme-switch button { width: 32px; height: 32px; }
+  .theme-switch button svg { width: 15px; height: 15px; }
 }
 
 /* --------------------------------------------------------------------------
@@ -1055,8 +1359,9 @@ kbd {
   }
   [data-reveal] { opacity: 1; transform: none; }
   .hero::before { display: none; }
-  .aurora { animation: none; }
+  .aurora, .mesh { animation: none; }
   .rvl::before, .rvl::after { display: none; }
+  .tile:hover, .case:hover, .cap:hover { transform: none; }
 }
 
 /* Respect users who have asked the OS to reduce transparency. */
@@ -1068,12 +1373,152 @@ kbd {
   :root { --line: var(--text-3); --line-2: var(--text-2); }
 }
 
+/* Windows High Contrast Mode discards author colours entirely. Every active
+   state on this page was expressed as a background tint or an accent hue,
+   both of which vanish there: so re-express them with system colour
+   keywords and borders, which forced-colors preserves. */
+@media (forced-colors: active) {
+  .stage[aria-selected='true'] .stage-bullet,
+  .theme-switch button[aria-checked='true'],
+  .cmdk-item[data-active='true'] {
+    forced-color-adjust: none;
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .nav a[aria-current='location'] { text-decoration: underline; }
+  .case, .cap, .pipeline, .cta, .artifact, .cmdk-panel, .toast {
+    border: 1px solid CanvasText;
+  }
+  .dot, .stage-bullet { forced-color-adjust: none; border: 1px solid CanvasText; }
+  /* Decorative layers carry no information and only add noise here. */
+  .aurora, .hero::before, .hero::after, .cta::before,
+  .rvl::before, .rvl::after, .nav-ink,
+  .mesh, .grain, .progress, .tile--hero::before, .pipeline::after { display: none; }
+  .grad-text { -webkit-text-fill-color: currentColor; background: none; }
+  .tile { border: 1px solid CanvasText; }
+}
+
 @media print {
   .header, .cmdk, .toast, .skip, .hero-actions, .cta-actions { display: none !important; }
-  .hero::before, .hero::after, .cta::before { display: none; }
+  .hero::before, .hero::after, .cta::before,
+  .mesh, .grain, .progress { display: none !important; }
+  .grad-text { -webkit-text-fill-color: currentColor; background: none; color: #000; }
   body { background: #fff; color: #000; }
+  .tile { border: 1px solid #ccc; box-shadow: none; break-inside: avoid; }
   .section { padding-block: var(--s-6); }
   .case, .cap, .cta { border: 1px solid #ccc; box-shadow: none; break-inside: avoid; }
   .case-detail[open] > summary { display: none; }
   a[href^='http']::after { content: ' (' attr(href) ')'; font-size: .8em; color: #555; }
+}
+
+/* --------------------------------------------------------------------------
+   Emphasis. A recruiter skims for figures, dates and qualifications; those
+   need to out-weigh the connective words around them. Mono needs a heavier
+   step than sans because its uniform advance flattens weight contrast.
+   -------------------------------------------------------------------------- */
+.hero-meta strong,
+.pipeline-foot strong,
+.tile-src strong {
+  font-weight: 700;
+  color: var(--text);
+}
+.tile-row dd strong { font-weight: 700; color: var(--text); }
+.case-sum strong { font-weight: 600; color: var(--text); }
+/* ==========================================================================
+   Colour system. Surfaces were flat white/near-black with a single accent,
+   which read as plain. Each section now owns a hue that appears on its rail
+   label, its cards' top hairline and its figures. Hues are applied as
+   hairlines, tints and text, never as large fills: a coloured surface would
+   drop text contrast, whereas a 2px rule and a 4% wash cost nothing.
+   ========================================================================== */
+[data-sec] { --hue: var(--hue-1); }
+[data-sec='work']         { --hue: var(--hue-2); }
+[data-sec='experience']   { --hue: var(--hue-3); }
+[data-sec='capabilities'] { --hue: var(--hue-4); }
+[data-sec='contact']      { --hue: var(--hue-5); }
+
+/* Rail label: the number takes the section hue, the word stays quiet. */
+[data-sec] .rail-label span {
+  color: var(--hue);
+  font-weight: 700;
+  opacity: 1;
+}
+
+/* Tinted surfaces. The wash is strongest at the top edge and fades out, so
+   the card still reads as a light surface and body text keeps its ratio. */
+.tile, .case, .cap {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--hue, var(--accent)) 6%, transparent) 0%,
+    transparent 55%
+  );
+}
+
+/* Hairline along the top edge, in the section hue. */
+.case, .cap { position: relative; }
+.case::after, .cap::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--hue, var(--accent)), transparent 70%);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+
+/* Figures and index numbers carry the hue. */
+[data-sec] .case-idx b { color: var(--hue); }
+[data-sec] .cap h3 { color: var(--hue); }
+.tile--stat:nth-of-type(2) .tile-n { color: var(--hue-2); }
+.tile--stat:nth-of-type(3) .tile-n { color: var(--hue-3); }
+
+/* Chips pick up a tint of their section rather than sitting uniformly grey. */
+[data-sec] .chip {
+  border-color: color-mix(in srgb, var(--hue) 22%, var(--line));
+  background: color-mix(in srgb, var(--hue) 5%, var(--bg-elev));
+}
+
+/* Section heading gets a short coloured rule above it, tying the heading to
+   its rail number. */
+[data-sec] .h-section::before {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 3px;
+  border-radius: 2px;
+  margin-bottom: var(--s-5);
+  background: linear-gradient(90deg, var(--hue), transparent);
+}
+
+@media (forced-colors: active) {
+  .case::after, .cap::after, [data-sec] .h-section::before { display: none; }
+  .tile, .case, .cap { background-image: none; }
+}
+/* Three equal-weight buttons no longer fit the hero column at the larger
+   control size, and a wrapped third button reads as a layout break. The
+   keyboard hint is tertiary, so it gets its own line deliberately: full
+   basis, quiet type, no button chrome. */
+.hero-actions .btn--quiet {
+  flex-basis: 100%;
+  justify-content: flex-start;
+  height: auto;
+  padding: 0;
+  margin-top: var(--s-2);
+  font-size: var(--t-xs);
+  color: var(--text-3);
+}
+.hero-actions .btn--quiet:hover { background: none; color: var(--text-2); }
+/* The enlarged header does not fit a 320px phone: brand + search + a
+   three-up theme switch measured ~320px against 280px of usable width.
+   Scale the chrome back down at the narrow end rather than let the page
+   scroll sideways. */
+@media (max-width: 400px) {
+  :root { --header-h: 62px; }
+  .brand { font-size: var(--t-sm); gap: var(--s-2); }
+  .brand-mark { width: 28px; height: 28px; font-size: 11px; }
+  .header-actions { gap: var(--s-1); }
+  .icon-btn { width: 34px; height: 34px; }
+  .icon-btn svg { width: 16px; height: 16px; }
+  .theme-switch { gap: 1px; padding: 1px; }
+  .theme-switch button { width: 28px; height: 28px; }
+  .theme-switch button svg { width: 14px; height: 14px; }
 }

@@ -26,6 +26,9 @@ const ICON = {
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])';
 
+// Explicit group order for the default (empty-query) listing.
+const GROUP_RANK = { 'Jump to': 0, 'Work': 1, 'Capabilities': 2, 'Actions': 3 };
+
 export function init() {
   const root    = document.querySelector('[data-cmdk]');
   const input   = root?.querySelector('input');
@@ -81,9 +84,15 @@ export function init() {
 
   function go(hash) {
     const el = document.querySelector(hash);
+    if (!el) return;
     // An explicit behavior option overrides the CSS scroll-behavior override,
     // so reduced-motion has to be honoured here too.
-    if (el) el.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+    el.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+    // close() has already returned focus to the header trigger. Without this
+    // the viewport is at the section while focus is at the top of the page,
+    // so the next Tab walks the header instead of the content just navigated to.
+    el.setAttribute('tabindex', '-1');
+    el.focus({ preventScroll: true });
   }
 
   function download() {
@@ -100,14 +109,19 @@ export function init() {
   }
 
   /* ------------------------------------------------------------ filter */
+  // Tokenised so a natural multi-word query ("sql factory", "test data")
+  // still matches: contiguous-substring scoring returned zero results the
+  // moment a user typed two words.
   function score(item, q) {
+    if (!q) return 1;
     const title = item.title.toLowerCase();
     const hay = `${title} ${item.sub} ${item.group}`.toLowerCase();
-    if (!q) return 1;
-    if (title.startsWith(q)) return 3;
-    if (title.includes(q)) return 2;
-    if (hay.includes(q)) return 1;
-    return 0;
+    const tokens = q.split(/\s+/).filter(Boolean);
+    if (!tokens.every((t) => hay.includes(t))) return 0;
+    if (title.startsWith(q)) return 4;
+    if (title.includes(q)) return 3;
+    if (tokens.every((t) => title.includes(t))) return 2;
+    return 1;
   }
 
   function filter(query) {
@@ -116,15 +130,19 @@ export function init() {
       .map((item) => ({ item, s: score(item, q) }))
       .filter((r) => r.s > 0);
 
-    // Sort groups by their best hit, then by score within a group — a plain
+    // Sort groups by their best hit, then by score within a group: a plain
     // score sort interleaves groups and renders duplicate group headers.
     const best = new Map();
     scored.forEach(({ item, s }) => {
       best.set(item.group, Math.max(best.get(item.group) || 0, s));
     });
+    // Relevance stays primary (a strong query hit still lifts its group), but
+    // the DEFAULT order is now intentional. Alphabetical tie-breaking opened
+    // the palette on "Actions → Download resume" with navigation scrolled out
+    // of view: and on mobile this dialog IS the navigation.
     scored.sort((a, b) =>
       (best.get(b.item.group) - best.get(a.item.group)) ||
-      a.item.group.localeCompare(b.item.group) ||
+      (GROUP_RANK[a.item.group] - GROUP_RANK[b.item.group]) ||
       (b.s - a.s));
 
     matches = scored.map((r) => r.item);
@@ -178,7 +196,7 @@ export function init() {
         `stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[item.icon] || ICON.section}</svg>` +
         `<span class="t"></span><span class="s"></span>`;
 
-      // Content is set as text, never markup — indexed strings come from the
+      // Content is set as text, never markup: indexed strings come from the
       // DOM and user input never reaches innerHTML.
       btn.querySelector('.t').textContent = item.title;
       btn.querySelector('.s').textContent = item.sub;
@@ -226,13 +244,25 @@ export function init() {
   /* -------------------------------------------------------- open/close */
   function isOpen() { return root.dataset.open === 'true'; }
 
-  // Everything behind the dialog goes inert while it is open — aria-modal
-  // alone doesn't stop pointer or Tab interaction with the page.
-  const inertTargets = () => [...document.querySelectorAll('body > header, body > main, body > footer')];
+  // Everything behind the dialog goes inert while it is open: aria-modal
+  // alone doesn't stop pointer or Tab interaction with the page. Enumerate
+  // body's children rather than naming landmarks: the skip link is a direct
+  // body child, and a header/main/footer selector silently missed it, so the
+  // first Tab inside the open dialog landed on "Skip to content".
+  // The toast is excluded so status messages ("Copied …") stay announceable.
+  const inertTargets = () => [...document.body.children].filter(
+    (el) => el !== root && el.tagName !== 'SCRIPT' && !el.hasAttribute('data-toast')
+  );
 
   function open() {
     if (isOpen()) return;
-    lastFocused = document.activeElement;
+    // Opened by shortcut from an unfocused page, activeElement is <body>;
+    // returning focus there on close would strand the keyboard user. Fall
+    // back to the trigger, which is where focus visibly belongs.
+    const active = document.activeElement;
+    lastFocused = (active && active !== document.body)
+      ? active
+      : document.querySelector('[data-cmdk-open]');
     buildIndex();
     root.dataset.open = 'true';
     input.value = '';
@@ -240,7 +270,29 @@ export function init() {
     document.body.style.overflow = 'hidden';
     inertTargets().forEach((el) => { el.inert = true; });
     filter('');
-    requestAnimationFrame(() => input.focus());
+
+    // Focus has to happen AFTER the frame that actually makes the dialog
+    // visible: .focus() on a visibility:hidden element is a silent no-op, and
+    // the inert fixup then blurs to <body>. That left the palette unusable: // keystrokes went to the page (any word containing "t" flipped the theme)
+    // and mobile never raised the on-screen keyboard.
+    //
+    // Rather than assume a fixed number of frames, assert the outcome and
+    // retry until it holds. A fixed double-rAF was measured working in one
+    // browser and still landing on <body> in another; a bounded retry is
+    // correct in both without depending on engine scheduling order.
+    // Bounded by FRAMES, not wall-clock. What gates focusability here is the
+    // dialog being painted, and that is measured in frames: a millisecond
+    // deadline is wrong under any clock that does not advance in step with
+    // rendering (throttled tabs, virtualised time), where it can expire
+    // after a single frame. 40 frames is ~0.7s at 60Hz and still terminates.
+    let frames = 0;
+    const focusInput = () => {
+      input.focus({ preventScroll: true });
+      if (document.activeElement !== input && frames++ < 40) {
+        requestAnimationFrame(focusInput);
+      }
+    };
+    requestAnimationFrame(focusInput);
   }
 
   function close() {
@@ -262,7 +314,7 @@ export function init() {
 
   // Focus trap. Only SEQUENTIALLY focusable elements count: the option rows
   // are tabindex="-1" (they're driven by aria-activedescendant), but they
-  // still match a bare `button` selector — including them made first !== last
+  // still match a bare `button` selector: including them made first !== last
   // for the input, so plain Tab sailed straight out of the open modal.
   root.addEventListener('keydown', (e) => {
     if (e.key !== 'Tab') return;
@@ -302,5 +354,5 @@ export function init() {
     btn.addEventListener('click', open);
   });
 
-  return { open, close };
+  return { open, close, isOpen };
 }

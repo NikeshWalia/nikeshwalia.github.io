@@ -1,7 +1,7 @@
 /**
  * Three-state theme control: light | dark | system.
  *
- * "System" is a real state, not the absence of a choice — the same model
+ * "System" is a real state, not the absence of a choice: the same model
  * GitHub and Linear use. A binary toggle silently overrides the OS
  * preference forever after one click, which is the wrong default.
  */
@@ -33,8 +33,12 @@ export function apply(pref) {
       .getPropertyValue('--bg').trim() || (resolved === 'dark' ? '#08090a' : '#f6f6f7');
   }
 
+  // aria-checked + roving tabindex: these are three mutually exclusive
+  // choices in a radiogroup, not three independent toggle buttons.
   document.querySelectorAll('[data-theme-set]').forEach((btn) => {
-    btn.setAttribute('aria-pressed', String(btn.dataset.themeSet === pref));
+    const on = btn.dataset.themeSet === pref;
+    btn.setAttribute('aria-checked', String(on));
+    btn.tabIndex = on ? 0 : -1;
   });
 }
 

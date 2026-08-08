@@ -61,8 +61,9 @@ export function initHeader() {
   const moveInk = (link) => {
     if (!ink) return;
     if (!link) { ink.dataset.on = 'false'; return; }
-    // Position relative to the nav, spanning the link's text padding-box.
-    const pad = 12; // matches --s-3 link padding
+    // Read the link's own horizontal padding rather than hard-coding --s-3;
+    // duplicating a CSS value in JS silently breaks when the token changes.
+    const pad = parseFloat(getComputedStyle(link).paddingLeft) || 12;
     const x = link.offsetLeft + pad;
     const w = Math.max(link.offsetWidth - pad * 2, 12);
     ink.style.transform = `translateX(${x}px) scaleX(${w / 24})`;
@@ -97,6 +98,33 @@ export function initHeader() {
   }, { passive: true });
 }
 
+/* --------------------------------------------------------- scroll progress
+   Drives a single custom property consumed by a scaleX transform, so the bar
+   animates on the compositor and never triggers layout. Reads are coalesced
+   to one per frame because scroll fires far above display refresh rate.
+   ------------------------------------------------------------------------ */
+export function initProgress() {
+  const bar = document.querySelector('[data-progress]');
+  if (!bar) return;
+
+  let queued = false;
+  const paint = () => {
+    queued = false;
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    const p = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+    bar.style.setProperty('--p', String(p));
+  };
+
+  const onScroll = () => {
+    if (!queued) { queued = true; requestAnimationFrame(paint); }
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  paint();
+}
+
 /* -------------------------------------------------------------- spotlight */
 export function initSpotlight() {
   const el = document.querySelector('[data-spotlight]');
@@ -125,7 +153,7 @@ export function initSpotlight() {
 /* ------------------------------------------------------------ reveal glow
    Fluent's reveal highlight: every .rvl card inside a [data-rvl-scope]
    gets the pointer position in its own coordinate space, so borders glow
-   as the pointer approaches — including from outside the card. One
+   as the pointer approaches: including from outside the card. One
    delegated listener per scope, one write batch per frame.
    ------------------------------------------------------------------------ */
 export function initRevealGlow() {
@@ -135,12 +163,18 @@ export function initRevealGlow() {
     const cards = scope.matches('.rvl') ? [scope] : [...scope.querySelectorAll('.rvl')];
     if (!cards.length) return;
 
-    let cx = 0, cy = 0, queued = false;
+    let cx = 0, cy = 0, queued = false, rects = [];
+
+    // Rects are cached on enter/scroll/resize instead of being read per frame.
+    // getBoundingClientRect() forces layout, and doing it for every card on
+    // every pointermove frame put a layout read in the animation hot path.
+    const measure = () => { rects = cards.map((c) => c.getBoundingClientRect()); };
 
     const paint = () => {
       queued = false;
-      cards.forEach((card) => {
-        const r = card.getBoundingClientRect();
+      cards.forEach((card, i) => {
+        const r = rects[i];
+        if (!r) return;
         card.style.setProperty('--rvl-x', `${cx - r.left}px`);
         card.style.setProperty('--rvl-y', `${cy - r.top}px`);
       });
@@ -152,18 +186,25 @@ export function initRevealGlow() {
     }, { passive: true });
 
     scope.addEventListener('pointerenter', () => {
+      measure();
       cards.forEach((c) => c.style.setProperty('--rvl-o', '1'));
     }, { passive: true });
 
     scope.addEventListener('pointerleave', () => {
       cards.forEach((c) => c.style.setProperty('--rvl-o', '0'));
     }, { passive: true });
+
+    // The pointer can stay inside a scope while the page scrolls under it.
+    window.addEventListener('scroll', () => { if (rects.length) measure(); }, { passive: true });
+    window.addEventListener('resize', () => { if (rects.length) measure(); }, { passive: true });
   });
 }
 
 /* --------------------------------------------------------------- pipeline
-   Stages are buttons; activating one pins its explanation into the detail
-   line (aria-live, height reserved so nothing reflows).
+   A tab set, not five toggles. aria-pressed announced five independent
+   on/off buttons when this is a single-select group with one shared panel
+   (the detail line). Tabs give the correct semantics plus the keyboard
+   contract users expect: arrows move, Home/End jump, one tab stop total.
    ------------------------------------------------------------------------ */
 export function initPipeline() {
   const list = document.querySelector('[data-pipeline]');
@@ -171,10 +212,67 @@ export function initPipeline() {
   if (!list || !detail) return;
 
   const stages = [...list.querySelectorAll('.stage')];
-  stages.forEach((stage) => {
-    stage.addEventListener('click', () => {
-      stages.forEach((s) => s.setAttribute('aria-pressed', String(s === stage)));
-      detail.textContent = stage.dataset.detail || '';
+  if (!stages.length) return;
+
+  const select = (stage, moveFocus) => {
+    stages.forEach((s) => {
+      const on = s === stage;
+      s.setAttribute('aria-selected', String(on));
+      // Roving tabindex: the group is one stop, arrows move within it.
+      s.tabIndex = on ? 0 : -1;
+    });
+    detail.textContent = stage.dataset.detail || '';
+    if (moveFocus) stage.focus();
+  };
+
+  stages.forEach((stage, i) => {
+    stage.addEventListener('click', () => select(stage, false));
+
+    stage.addEventListener('keydown', (e) => {
+      const last = stages.length - 1;
+      let next = null;
+      switch (e.key) {
+        case 'ArrowRight': case 'ArrowDown': next = stages[i === last ? 0 : i + 1]; break;
+        case 'ArrowLeft':  case 'ArrowUp':   next = stages[i === 0 ? last : i - 1]; break;
+        case 'Home':                         next = stages[0]; break;
+        case 'End':                          next = stages[last]; break;
+        default: return;
+      }
+      e.preventDefault();
+      select(next, true);
+    });
+  });
+
+  // Establish the initial roving-tabindex state from the authored markup.
+  const initial = stages.find((s) => s.getAttribute('aria-selected') === 'true') || stages[0];
+  select(initial, false);
+}
+
+/* ----------------------------------------------------------- theme switch
+   Radio group semantics: three mutually exclusive choices, not three
+   independent toggles. Arrow keys move and select, matching the pattern a
+   screen-reader user is told to expect once they hear "radio group".
+   ------------------------------------------------------------------------ */
+export function initThemeSwitchKeys(onSelect) {
+  const group = document.querySelector('[data-theme-switch]');
+  if (!group) return;
+  const radios = [...group.querySelectorAll('[data-theme-set]')];
+  if (!radios.length) return;
+
+  radios.forEach((radio, i) => {
+    radio.addEventListener('keydown', (e) => {
+      const last = radios.length - 1;
+      let next = null;
+      switch (e.key) {
+        case 'ArrowRight': case 'ArrowDown': next = radios[i === last ? 0 : i + 1]; break;
+        case 'ArrowLeft':  case 'ArrowUp':   next = radios[i === 0 ? last : i - 1]; break;
+        case 'Home':                         next = radios[0]; break;
+        case 'End':                          next = radios[last]; break;
+        default: return;
+      }
+      e.preventDefault();
+      onSelect(next.dataset.themeSet);
+      next.focus();
     });
   });
 }
@@ -196,7 +294,11 @@ export function initCaseToggles() {
 
 /* ------------------------------------------------------------ kbd platform */
 export function initKeycaps() {
-  const isApple = /Mac|iPhone|iPad|iPod/.test(
+  // Case-insensitive: userAgentData.platform reports "macOS" (lowercase m),
+  // which a /Mac/ test silently misses: Chrome and Edge on macOS were then
+  // told their shortcut is Ctrl. Safari was unaffected because it has no
+  // userAgentData and falls through to platform === "MacIntel".
+  const isApple = /mac|iphone|ipad|ipod/i.test(
     navigator.userAgentData?.platform || navigator.platform || ''
   );
   if (isApple) return; // ⌘ is already in the markup
@@ -209,9 +311,16 @@ export function toast(message) {
   const el = document.querySelector('[data-toast]');
   if (!el) return;
   const label = el.querySelector('[data-toast-msg]');
-  if (label) label.textContent = message;
-  el.dataset.open = 'true';
   clearTimeout(toastTimer);
+
+  // Reveal the region BEFORE writing to it. Mutating an aria-live region that
+  // is still visibility:hidden is commonly not announced at all, so the
+  // "Copied …" confirmation was silent for screen-reader users.
+  el.dataset.open = 'true';
+  requestAnimationFrame(() => {
+    if (label) label.textContent = message;
+  });
+
   toastTimer = setTimeout(() => { el.dataset.open = 'false'; }, 2400);
 }
 
@@ -243,8 +352,8 @@ export function initClipboard() {
         toast(`Copied ${value}`);
       } catch {
         // The fallback path may have moved focus; hand it back, and show the
-        // value itself — "press Ctrl+C" is useless once the selection is gone.
-        toast(`Copy blocked — ${value}`);
+        // value itself: "press Ctrl+C" is useless once the selection is gone.
+        toast(`Copy blocked. ${value}`);
       } finally {
         btn.focus();
       }
