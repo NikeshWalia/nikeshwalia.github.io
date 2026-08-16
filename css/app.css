@@ -1435,7 +1435,8 @@ kbd {
 [data-sec='work']         { --hue: var(--hue-2); }
 [data-sec='experience']   { --hue: var(--hue-3); }
 [data-sec='capabilities'] { --hue: var(--hue-4); }
-[data-sec='contact']      { --hue: var(--hue-5); }
+[data-sec='certs']        { --hue: var(--hue-5); }
+[data-sec='contact']      { --hue: var(--hue-1); }
 
 /* Rail label: the number takes the section hue, the word stays quiet. */
 [data-sec] .rail-label span {
@@ -1521,4 +1522,40 @@ kbd {
   .theme-switch { gap: 1px; padding: 1px; }
   .theme-switch button { width: 28px; height: 28px; }
   .theme-switch button svg { width: 14px; height: 14px; }
+}
+/* --------------------------------------------------------------------------
+   Certifications. A two-column list rather than cards: these are short
+   factual lines, and card chrome around six one-liners would out-weigh the
+   content. The in-progress item is marked rather than hidden, because
+   "studying for ISTQB" is itself a signal worth showing.
+   -------------------------------------------------------------------------- */
+.certs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3) var(--s-8);
+}
+.cert {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--s-4) 0 var(--s-4) var(--s-5);
+  border-left: 2px solid var(--line);
+  transition: border-color var(--d-fast) var(--e-out);
+}
+.cert:hover { border-left-color: var(--hue, var(--accent)); }
+.cert-name { font-size: var(--t-base); font-weight: 600; color: var(--text); text-wrap: pretty; }
+.cert-meta {
+  font-family: var(--font-mono);
+  font-size: var(--t-micro);
+  color: var(--text-3);
+}
+.cert-meta b {
+  color: var(--hue, var(--accent-text));
+  font-weight: 700;
+}
+/* The one you are actively working toward leads the list and keeps the hue. */
+.cert--now { border-left-color: var(--hue, var(--accent)); }
+
+@media (max-width: 780px) {
+  .certs { grid-template-columns: minmax(0, 1fr); }
 }
