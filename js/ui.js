@@ -45,6 +45,95 @@ export function initReveal() {
 }
 
 /* ------------------------------------------------- header + spy + ink */
+/* The rotating "I build ___" line. Written by hand rather than pulled from a
+   typing library, because the whole effect is one interval and a substring.
+   Under prefers-reduced-motion it prints the first phrase and stops: motion
+   that conveys nothing must not be forced on someone who asked for none. */
+export function initType() {
+  const host = document.querySelector('[data-type]');
+  if (!host) return;
+  const out = host.querySelector('.type-text');
+  const caret = host.querySelector('.type-caret');
+  const phrases = host.dataset.type.split('|').map((p) => p.trim()).filter(Boolean);
+  if (!out || phrases.length < 2) return;
+
+  if (prefersReducedMotion) {
+    out.textContent = phrases[0];
+    if (caret) caret.remove();
+    return;
+  }
+
+  // No ARIA is set here: the markup already carries a visually-hidden copy of
+  // the full list for screen readers, and the animated span is aria-hidden.
+  // aria-label on a bare span is prohibited and would be ignored anyway.
+
+  // The markup already prints phrase 0 in full, so the first action is to
+  // erase it. Starting with deleting=false made the first tick increment past
+  // the string length, so `i === word.length` never matched and it sat on the
+  // same full phrase forever.
+  let p = 0, i = phrases[0].length, deleting = true, timer;
+  const TYPE = 55, ERASE = 28, HOLD = 1900, GAP = 320;
+
+  const tick = () => {
+    const word = phrases[p];
+    i += deleting ? -1 : 1;
+    out.textContent = word.slice(0, i);
+
+    let wait = deleting ? ERASE : TYPE;
+    if (!deleting && i === word.length) { deleting = true; wait = HOLD; }
+    else if (deleting && i === 0) { deleting = false; p = (p + 1) % phrases.length; wait = GAP; }
+    timer = setTimeout(tick, wait);
+  };
+  timer = setTimeout(tick, HOLD);
+
+  // A tab in the background still runs timers; stop burning them.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) clearTimeout(timer);
+    else { clearTimeout(timer); timer = setTimeout(tick, GAP); }
+  });
+}
+
+/* The portrait is optional. CSP blocks inline onerror (hashes do not cover
+   event handlers), so the fallback lives here: if portrait.jpg is missing the
+   img is removed and the monogram beneath it shows. Drop a square photo at
+   portrait.jpg and it takes over with no other change. */
+export function initPortrait() {
+  const img = document.querySelector('[data-portrait]');
+  if (!img) return;
+  const drop = () => img.remove();
+  if (img.complete && img.naturalWidth === 0) drop();
+  img.addEventListener('error', drop, { once: true });
+}
+
+/* The rail becomes a drawer below 1080px. Focus moves into it on open and
+   returns to the trigger on close, and Escape dismisses it. */
+export function initDrawer() {
+  const btn = document.querySelector('[data-drawer-toggle]');
+  const rail = document.getElementById('sidebar');
+  const veil = document.querySelector('[data-drawer-veil]');
+  if (!btn || !rail || !veil) return;
+
+  const set = (open) => {
+    rail.dataset.open = String(open);
+    veil.dataset.open = String(open);
+    veil.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+    if (open) rail.querySelector('a, button')?.focus({ preventScroll: true });
+    else btn.focus({ preventScroll: true });
+  };
+
+  btn.addEventListener('click', () => set(rail.dataset.open !== 'true'));
+  veil.addEventListener('click', () => set(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && rail.dataset.open === 'true') set(false);
+  });
+  // Following a link should close the drawer, or the destination stays hidden
+  // behind it.
+  rail.addEventListener('click', (e) => {
+    if (e.target.closest('a[href^="#"]') && matchMedia('(max-width: 1080px)').matches) set(false);
+  });
+}
+
 export function initHeader() {
   const header = document.querySelector('[data-header]');
   if (header) {
@@ -59,13 +148,15 @@ export function initHeader() {
   if (!links.length || !('IntersectionObserver' in window)) return;
 
   const moveInk = (link) => {
-    if (!ink) return;
+    if (!ink) return;                       // vertical rail: no ink to move
     if (!link) { ink.dataset.on = 'false'; return; }
     // Read the link's own horizontal padding rather than hard-coding --s-3;
     // duplicating a CSS value in JS silently breaks when the token changes.
     const pad = parseFloat(getComputedStyle(link).paddingLeft) || 12;
-    const x = link.offsetLeft + pad;
-    const w = Math.max(link.offsetWidth - pad * 2, 12);
+    const navRect = nav.getBoundingClientRect();
+    const r = link.getBoundingClientRect();
+    const x = r.left - navRect.left + pad;
+    const w = Math.max(r.width - pad * 2, 12);
     ink.style.transform = `translateX(${x}px) scaleX(${w / 24})`;
     ink.dataset.on = 'true';
   };
@@ -80,7 +171,11 @@ export function initHeader() {
   const visible = new Set();
   const spy = new IntersectionObserver((entries) => {
     entries.forEach((e) => (e.isIntersecting ? visible.add(e.target.id) : visible.delete(e.target.id)));
-    const active = targets.find((t) => visible.has(t.el.id));
+    // #top is a zero-height anchor span, so the observer never reports it and
+    // the first nav item stayed unmarked at the top of the page. Fall back to
+    // it while the page is still near the top.
+    let active = targets.find((t) => visible.has(t.el.id));
+    if (!active && window.scrollY < window.innerHeight * 0.6) active = targets[0];
     links.forEach((a) => {
       // 'location' is the correct aria-current token for in-page navigation.
       if (active && a === active.a) a.setAttribute('aria-current', 'location');
@@ -90,6 +185,16 @@ export function initHeader() {
   }, { rootMargin: '-20% 0px -68% 0px' });
 
   targets.forEach((t) => spy.observe(t.el));
+
+  // The panels open on :focus-within, so Escape closes one by moving focus
+  // back to the trigger and out of the panel.
+
+  // The ink is positioned from measured geometry, so it has to be recomputed
+  // when that geometry changes.
+  addEventListener('resize', () => {
+    const cur = links.find((a) => a.hasAttribute('aria-current'));
+    if (cur) moveInk(cur);
+  }, { passive: true });
 
   // Keep the ink honest across resizes (font metrics shift positions).
   window.addEventListener('resize', () => {

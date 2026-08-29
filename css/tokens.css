@@ -11,11 +11,22 @@
    were JetBrainsMono-400/500). 121,176 bytes of a 299 KB page were duplicate.
    Verified by rendering 400/500/600 from a single binary: all distinct. */
 @font-face {
-  font-family: 'Plus Jakarta Sans';
+  font-family: 'Space Grotesk';
   font-style: normal;
-  font-weight: 400 700;
+  font-weight: 300 700;
   font-display: swap;
-  src: url('../fonts/PlusJakartaSans.woff2') format('woff2');
+  src: url('../fonts/SpaceGrotesk.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+                 U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url('../fonts/Fraunces.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
                  U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
                  U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -32,19 +43,17 @@
                  U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Metric-adjusted fallback. Keeps the swap from shifting layout while the
-   webfont loads: this is what holds CLS at 0.
-   Values MEASURED against Arial, not copied: rendering the same string at
-   100px gives Plus Jakarta Sans 2308.01px vs Arial 2518.26px, so the
-   fallback must be scaled to 91.7% for the two to occupy identical space.
-   Ascent/descent are expressed as a share of that adjusted em. */
+/* Metric-adjusted fallback, so the swap never shifts layout.
+   Values MEASURED with canvas TextMetrics against Arial, not copied from a
+   generator: Space Grotesk sets the same string 105.6% as wide, with ascent
+   98 and descent 29 per 100px against Arial's 91 and 21. */
 @font-face {
-  font-family: 'Jakarta Fallback';
+  font-family: 'Grotesk Fallback';
   src: local('Arial');
-  ascent-override: 97.1%;
-  descent-override: 24%;
+  ascent-override: 92.8%;
+  descent-override: 27.5%;
   line-gap-override: 0%;
-  size-adjust: 91.7%;
+  size-adjust: 105.6%;
 }
 
 /* ==========================================================================
@@ -56,7 +65,8 @@
   /* ---- Type ------------------------------------------------------------ */
   /* The metric-adjusted fallback sits second so the pre-swap frame renders
      with Plus Jakarta Sans's metrics: that, not luck, is what holds CLS at 0. */
-  --font-sans: 'Plus Jakarta Sans', 'Jakarta Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Space Grotesk', 'Grotesk Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Mono', monospace;
 
   /* Fluid scale. Rebalanced: the previous ramp put an 88px H1 against a 15px
@@ -78,13 +88,13 @@
   --t-lg:    clamp(1.1875rem, 0.4vw + 1.05rem, 1.375rem);
   --t-xl:    clamp(1.5rem,  1.1vw + 1.1rem, 2rem);
   --t-2xl:   clamp(1.75rem, 1.7vw + 1.1rem, 2.5rem);
-  --t-3xl:   clamp(2.375rem, 2.9vw + 1.1rem, 3.75rem);
+  --t-3xl:   clamp(2.75rem, 4.4vw + 0.9rem, 5rem);
 
   --lh-tight: 1.05;
   --lh-snug:  1.28;
   --lh-body:  1.62;
 
-  --tr-tight: -0.035em;
+  --tr-tight: -0.045em;
   --tr-snug:  -0.02em;
   --tr-wide:  0.08em;
 
@@ -107,7 +117,7 @@
   --header-h: 78px;
 
   /* ---- Radius ---------------------------------------------------------- */
-  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px; --r-full: 999px;
+  --r-sm: 3px; --r-md: 4px; --r-lg: 6px; --r-xl: 8px; --r-full: 999px;
 
   /* ---- Motion ---------------------------------------------------------- */
   --e-out:   cubic-bezier(.22, 1, .36, 1);      /* entrances */
@@ -120,65 +130,63 @@
   --d-slow: 420ms;
   --stagger: 55ms;
 
-  /* ---- Light theme ----------------------------------------------------- */
-  --bg:        #f6f6f7;
-  --bg-elev:   #ffffff;
-  --bg-sunken: #efeff1;
-  --bg-code:   #fbfbfc;
+  /* ---- Light theme -----------------------------------------------------
+     Warm paper and a rust accent. Cream reads as printed matter, and rust is
+     a long way from the indigo every generated page ships. The rail is a deep
+     navy so the person and the navigation sit on a different surface from the
+     content, which is what makes the layout legible at a glance.
+     ---------------------------------------------------------------------- */
+  --bg:        #f7f1e8;
+  --bg-elev:   #fffaf3;
+  --bg-sunken: #efe6d9;
+  --bg-code:   #f3ebdf;
 
-  --text:   #0d0d0f;
-  --text-2: #55585f;
-  /* 4.6:1 on --bg #f6f6f7 and ~5:1 on white. The previous #83868d measured
-     3.38:1: the light ramp never got the audit the dark ramp did. */
-  /* 5.6:1 on --bg. Raised from #6b6e75 (4.6:1): that passed AA but every
-     mono label on the page uses it at small sizes, where bare-minimum
-     contrast is not enough to skim comfortably. */
-  --text-3: #5c5f66;
+  --text:   #1e2430;
+  --text-2: #4d5461;
+  /* 5.2:1 on --bg. */
+  --text-3: #5f6572;
 
-  --selection: rgba(75, 75, 219, .14);
+  --selection: rgba(224, 90, 42, .18);
 
-  --line:   #e3e3e6;
-  --line-2: #d3d4d8;
+  --line:   #e0d4c3;
+  --line-2: #cbbca7;
 
-  --accent:      #4b4bdb;
-  --accent-text: #3f3fc4;
-  --accent-weak: rgba(75, 75, 219, .09);
-  --on-accent:   #ffffff;
+  --accent:      #c8481d;
+  --accent-text: #b6421a;
+  --accent-weak: rgba(224, 90, 42, .10);
+  --on-accent:   #fffaf3;
 
-  /* Second hue, used only in gradients and the mesh. Two stops give the page
-     a colour story without letting any single element become multi-coloured. */
-  --accent-2:    #0d9aad;
-  --grad: linear-gradient(115deg, var(--accent) 0%, var(--accent-2) 100%);
+  --accent-2:    #c8481d;
+  --grad: none;
 
-  /* Per-section hues. Each section owns one, used on its rail label, card
-     hairline and figures, so scrolling reads as moving through distinct
-     places rather than down one long grey column. All four are darkened
-     enough to clear 4.5:1 as text on --bg-elev. */
-  --hue-1: #4b4bdb;   /* impact  */
-  --hue-2: #0a6270;   /* work: darkened from #0d7d8f, which measured 4.47:1 */
-  --hue-3: #7b3fd4;   /* experience */
-  --hue-4: #8a5200;   /* capabilities: darkened from #b06a00, 3.96:1 */
-  --hue-5: #c0357a;   /* contact */
+  /* These colour text, so they carry the text-safe rust: #c8481d measures
+     4.24:1 on cream and fails AA at small sizes. */
+  --hue-1: #b6421a; --hue-2: #b6421a; --hue-3: #b6421a;
+  --hue-4: #b6421a; --hue-5: #b6421a;
 
-  --pass: #0f7b46;
-  --fail: #c02626;
-  --warn: #9a6200;
+  --pass: #14713f;
+  --fail: #b3261e;
+  --warn: #8a5a00;
 
-  --glow: rgba(75, 75, 219, .16);
-  /* Ambient mesh: three slow-drifting radial fields behind the hero, CTA and
-     footer. Kept low-alpha in light so text contrast is never affected. */
-  --mesh-1: rgba(75, 75, 219, .28);
-  --mesh-2: rgba(13, 154, 173, .24);
-  --mesh-3: rgba(150, 80, 230, .22);
-  --grain-o: .035;
-  /* Accent-tinted elevation. Neutral shadows read flat against a coloured
-     mesh; tinting them keeps cards sitting *in* the composition. */
-  --glow-card: 0 1px 2px rgba(13,13,15,.05), 0 18px 40px -22px rgba(75,75,219,.42);
-  --glow-card-hi: 0 1px 2px rgba(13,13,15,.06), 0 28px 60px -24px rgba(75,75,219,.55);
+  /* The rail. Its own surface, dark in both themes. */
+  --rail-bg:   #121723;
+  --rail-bg-2: #1b2231;
+  --rail-text: #eef1f6;
+  --rail-mute: #98a1b3;
+  --rail-line: #2a3244;
+  /* Accent text ON the rail. The page accent is tuned for cream and drops to
+     3.22:1 on this navy; this clears 4.83:1 and is the reference's own rust. */
+  --rail-accent: #e05a2a;
+  --rail-fill:   #c8481d;   /* white text on this = 4.77:1 */
 
-  --shadow-1: 0 1px 2px rgba(13,13,15,.06), 0 1px 1px rgba(13,13,15,.04);
-  --shadow-2: 0 2px 4px rgba(13,13,15,.05), 0 8px 20px -6px rgba(13,13,15,.12);
-  --shadow-3: 0 8px 24px -8px rgba(13,13,15,.18), 0 24px 56px -16px rgba(13,13,15,.20);
+  --glow: transparent;
+  --mesh-1: transparent; --mesh-2: transparent; --mesh-3: transparent;
+  --grain-o: 0;
+  --glow-card: none; --glow-card-hi: none;
+
+  --shadow-1: none;
+  --shadow-2: 0 1px 2px rgba(30, 36, 48, .07);
+  --shadow-3: 0 14px 36px -18px rgba(30, 36, 48, .28);
 
   color-scheme: light;
 }
@@ -189,56 +197,51 @@
    lightness so it keeps contrast against a dark field.
    ---------------------------------------------------------------------- */
 [data-theme='dark'] {
-  --bg:        #08090a;
-  --bg-elev:   #0f1012;
-  --bg-sunken: #050506;
-  --bg-code:   #0c0d0f;
+  --bg:        #14161d;
+  --bg-elev:   #1b1e27;
+  --bg-sunken: #0f1116;
+  --bg-code:   #191c24;
 
-  --text:   #f2f3f4;
-  --text-2: #9ca0a7;
-  /* 4.5:1 against --bg (#08090a) at 12px. #6a6e75 measured 3.89:1 and failed
-     WCAG AA on every mono label on the page. */
-  --text-3: #8b9099;
+  --text:   #eef1f6;
+  --text-2: #a8b0c0;
+  --text-3: #939bab;
 
-  /* At 12% alpha over near-black, selection was a ~3% luminance change: invisible. Dark needs a stronger token, not the light one inverted. */
-  --selection: rgba(155, 155, 251, .30);
+  --selection: rgba(240, 120, 70, .28);
 
-  --line:   #1c1e21;
-  --line-2: #2a2d31;
+  --line:   #272b36;
+  --line-2: #3a3f4d;
 
-  --accent:      #9b9bfb;
-  --accent-text: #b3b3fc;
-  --accent-weak: rgba(155, 155, 251, .12);
-  --on-accent:   #0b0b16;
+  --accent:      #f07846;
+  --accent-text: #f78e60;
+  --accent-weak: rgba(240, 120, 70, .14);
+  --on-accent:   #14161d;
 
-  --accent-2:    #5ce1f2;
-  --grad: linear-gradient(115deg, var(--accent) 0%, var(--accent-2) 100%);
+  --accent-2:    #f07846;
+  --grad: none;
 
-  /* Lifted for a dark field: same hues, raised lightness so each still
-     clears 4.5:1 against --bg-elev. */
-  --hue-1: #9b9bfb;
-  --hue-2: #4fd5e8;
-  --hue-3: #c39bff;
-  --hue-4: #f5b942;
-  --hue-5: #ff8fc0;
+  --hue-1: #f07846; --hue-2: #f07846; --hue-3: #f07846;
+  --hue-4: #f07846; --hue-5: #f07846;
 
-  --pass: #4ec98a;
-  --fail: #ff8080;
-  --warn: #ffc247;
+  --pass: #4cc38a;
+  --fail: #ff6b60;
+  --warn: #e0a020;
 
-  --glow: rgba(155, 155, 251, .22);
-  /* Dark carries the mesh harder: on near-black it is the main source of
-     depth, since shadows are mathematically invisible here. */
-  --mesh-1: rgba(120, 118, 255, .34);
-  --mesh-2: rgba(60, 200, 220, .22);
-  --mesh-3: rgba(170, 90, 250, .26);
-  --grain-o: .05;
-  --glow-card: inset 0 1px 0 rgba(255,255,255,.05), 0 20px 46px -26px rgba(0,0,0,.9);
-  --glow-card-hi: inset 0 1px 0 rgba(255,255,255,.08), 0 30px 70px -28px rgba(0,0,0,1);
+  --rail-bg:   #0d1017;
+  --rail-bg-2: #14181f;
+  --rail-text: #eef1f6;
+  --rail-mute: #8f97a6;
+  --rail-line: #242a36;
+  --rail-accent: #e05a2a;   /* 5.13:1 on the dark rail */
+  --rail-fill:   #c8481d;   /* white text on this = 4.77:1, both themes */
 
-  --shadow-1: 0 1px 2px rgba(0,0,0,.5);
-  --shadow-2: 0 2px 4px rgba(0,0,0,.5), 0 8px 20px -6px rgba(0,0,0,.6);
-  --shadow-3: 0 8px 24px -8px rgba(0,0,0,.7), 0 24px 56px -16px rgba(0,0,0,.8);
+  --glow: transparent;
+  --mesh-1: transparent; --mesh-2: transparent; --mesh-3: transparent;
+  --grain-o: 0;
+  --glow-card: none; --glow-card-hi: none;
+
+  --shadow-1: none;
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, .5);
+  --shadow-3: 0 14px 36px -18px rgba(0, 0, 0, .8);
 
   color-scheme: dark;
 }

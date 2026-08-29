@@ -30,7 +30,7 @@ export function apply(pref) {
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) {
     meta.content = getComputedStyle(document.documentElement)
-      .getPropertyValue('--bg').trim() || (resolved === 'dark' ? '#08090a' : '#f6f6f7');
+      .getPropertyValue('--bg').trim() || (resolved === 'dark' ? '#0c0b0a' : '#fbfaf8');
   }
 
   // aria-checked + roving tabindex: these are three mutually exclusive

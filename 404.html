@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>404 | Nikesh Walia</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#f6f6f7">
+<meta name="theme-color" content="#fbfaf8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-aS/ph4i1I+Xu88AYaKAM/YCmOmYrHy7HD+qNveacOq0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d0d0f'/%3E%3Ctext x='16' y='21.5' font-family='ui-monospace,monospace' font-size='13' font-weight='700' fill='%23fff' text-anchor='middle'%3ENW%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%2314110f'/%3E%3Ctext x='16' y='21.5' font-family='ui-monospace,monospace' font-size='13' font-weight='700' fill='%23fff' text-anchor='middle'%3ENW%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/app.css">
 <script>
@@ -32,6 +32,22 @@
   .nf h1 { font-size: var(--t-2xl); font-weight: 600; letter-spacing: var(--tr-tight); }
   .nf p { margin-top: var(--s-4); color: var(--text-2); max-width: 46ch; margin-inline: auto; }
   .nf .actions { display: flex; gap: var(--s-3); justify-content: center; margin-top: var(--s-8); flex-wrap: wrap; }
+  .nf-assert {
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    gap: 4px var(--s-4);
+    margin-top: var(--s-6);
+    padding: var(--s-4) var(--s-5);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--bg-elev);
+    font-family: var(--font-mono);
+    font-size: var(--t-mono);
+    text-align: left;
+  }
+  .nf-assert dt { color: var(--text-3); }
+  .nf-assert dd { color: var(--text); }
+  .nf-assert .bad { color: var(--fail); }
 </style>
 </head>
 <body>
@@ -40,6 +56,10 @@
     <div class="nf-code">Error 404 · Not found</div>
     <h1>This test case doesn't exist.</h1>
     <p>The page you asked for isn't here. That's a genuine 404, not a redirect chain. I checked.</p>
+    <dl class="nf-assert">
+      <dt>Expected</dt><dd>a page</dd>
+      <dt>Actual</dt><dd class="bad">nothing</dd>
+    </dl>
     <div class="actions">
       <a href="/" class="btn btn--primary">Back to the portfolio</a>
       <a href="/#contact" class="btn btn--ghost">Get in touch</a>

@@ -7,13 +7,16 @@
 import * as theme from './theme.js';
 import * as palette from './palette.js';
 import {
-  initReveal, initHeader, initSpotlight, initRevealGlow, initProgress,
+  initReveal, initHeader, initDrawer, initPortrait, initType, initSpotlight, initRevealGlow, initProgress,
   initPipeline, initCaseToggles, initKeycaps, initClipboard,
   initThemeSwitchKeys, toast,
 } from './ui.js';
 
 theme.init();
 initHeader();
+initDrawer();
+initPortrait();
+initType();
 initProgress();
 initReveal();
 initSpotlight();

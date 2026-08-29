@@ -22,12 +22,13 @@ const ICON = {
   link:    '<path d="M7 17 17 7M9 7h8v8"/>',
   theme:   '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M5 5l1.5 1.5M17.5 17.5 19 19M2 12h2M20 12h2M5 19l1.5-1.5M17.5 6.5 19 5"/>',
   copy:    '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  repo:    '<path d="M4 4a2 2 0 0 1 2-2h12v18H6a2 2 0 0 0-2 2z"/><path d="M6 16h12"/>',
 };
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])';
 
 // Explicit group order for the default (empty-query) listing.
-const GROUP_RANK = { 'Jump to': 0, 'Work': 1, 'Capabilities': 2, 'Actions': 3 };
+const GROUP_RANK = { 'Jump to': 0, 'Work': 1, 'Repositories': 2, 'Skills': 3, 'Actions': 4 };
 
 export function init() {
   const root    = document.querySelector('[data-cmdk]');
@@ -63,15 +64,30 @@ export function init() {
     }));
 
     const caps = [...document.querySelectorAll('[data-index-skill]')].map((el) => ({
-      group: 'Capabilities',
+      group: 'Skills',
       icon: 'skill',
       title: el.dataset.indexSkill,
       sub: el.dataset.indexSub || '',
       run: () => go('#capabilities'),
     }));
 
+    // Declared, not scraped: these are external destinations, and a recruiter
+    // searching "shopsphere" or "playwright" should land on the code itself,
+    // not just on the card that describes it.
+    const repos = [
+      { title: 'ShopSphere: app and 916-test platform', sub: 'github.com/NikeshWalia/shopsphere', icon: 'repo',
+        url: 'https://github.com/NikeshWalia/shopsphere' },
+      { title: 'CropCraft: ML crop recommendation', sub: 'github.com/NikeshWalia/Cropcraft', icon: 'repo',
+        url: 'https://github.com/NikeshWalia/Cropcraft' },
+      { title: 'GitHub profile', sub: 'github.com/NikeshWalia', icon: 'repo',
+        url: 'https://github.com/NikeshWalia' },
+    ].map((r) => ({
+      group: 'Repositories', icon: r.icon, title: r.title, sub: r.sub,
+      run: () => window.open(r.url, '_blank', 'noopener'),
+    }));
+
     const actions = [
-      { group: 'Actions', icon: 'file',  title: 'Download resume (PDF)', sub: 'Nikesh_CV.pdf', run: download },
+      { group: 'Actions', icon: 'file',  title: 'Download resume (PDF)', sub: 'Nikesh_Walia_CV.pdf', run: download },
       { group: 'Actions', icon: 'mail',  title: 'Send an email',         sub: 'nikeshwalia@gmail.com', run: () => { location.href = 'mailto:nikeshwalia@gmail.com'; } },
       { group: 'Actions', icon: 'copy',  title: 'Copy email address',    sub: 'nikeshwalia@gmail.com', run: () => copyValue('nikeshwalia@gmail.com') },
       { group: 'Actions', icon: 'copy',  title: 'Copy phone number',     sub: '+91 62396 77566', run: () => copyValue('+916239677566') },
@@ -79,7 +95,7 @@ export function init() {
       { group: 'Actions', icon: 'theme', title: 'Cycle theme',           sub: 'light → dark → system', run: () => toast(`Theme: ${theme.cycle()}`) },
     ];
 
-    items = [...nav, ...cases, ...caps, ...actions];
+    items = [...nav, ...cases, ...repos, ...caps, ...actions];
   }
 
   function go(hash) {
@@ -97,7 +113,7 @@ export function init() {
 
   function download() {
     const a = document.createElement('a');
-    a.href = 'Nikesh_CV.pdf';
+    a.href = 'Nikesh_Walia_CV.pdf';
     a.download = 'Nikesh_Walia_CV.pdf';
     document.body.append(a);
     a.click();
