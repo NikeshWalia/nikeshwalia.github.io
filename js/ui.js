@@ -209,6 +209,55 @@ export function initHeader() {
    to one per frame because scroll fires far above display refresh rate.
    ------------------------------------------------------------------------ */
 /* Reveals the back-to-top control once the page has scrolled a screen. */
+/* Counts the impact figures up as they arrive.
+   An earlier version of this froze part-way and left wrong numbers on screen,
+   so the loop is driven by ELAPSED TIME with a hard end, not by accumulating
+   increments: whatever happens to the frame rate, the last write is always
+   the exact target. A watchdog also force-completes if rAF is throttled. */
+export function initCounters() {
+  const els = [...document.querySelectorAll('[data-count]')];
+  if (!els.length) return;
+
+  const settle = (el, target) => { el.textContent = String(target); };
+
+  if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+    els.forEach((el) => settle(el, Number(el.dataset.count)));
+    return;
+  }
+
+  const run = (el) => {
+    const target = Number(el.dataset.count);
+    if (!Number.isFinite(target)) return;
+    const DUR = 1100;
+    const start = performance.now();
+    let done = false;
+    const finish = () => { if (!done) { done = true; settle(el, target); } };
+    // If the tab is backgrounded mid-count, rAF stops; land on the real value.
+    const watchdog = setTimeout(finish, DUR + 600);
+
+    const step = (now) => {
+      if (done) return;
+      const t = Math.min(1, (now - start) / DUR);
+      const eased = 1 - Math.pow(1 - t, 3);          // ease-out-cubic
+      el.textContent = String(Math.round(target * eased));
+      if (t < 1) requestAnimationFrame(step);
+      else { clearTimeout(watchdog); finish(); }
+    };
+    el.textContent = '0';
+    requestAnimationFrame(step);
+  };
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      run(e.target);
+    });
+  }, { rootMargin: '0px 0px -18% 0px' });
+
+  els.forEach((el) => io.observe(el));
+}
+
 export function initToTop() {
   const btn = document.querySelector('[data-to-top]');
   if (!btn) return;

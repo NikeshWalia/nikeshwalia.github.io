@@ -2793,3 +2793,50 @@ body {
 .to-top[data-on='true'] { opacity: 1; visibility: visible; transform: none; }
 .to-top:hover { filter: brightness(1.08); }
 @media (max-width: 1080px) { .to-top { bottom: 16px; right: 16px; } }
+
+
+/* --------------------------------------------------------------------------
+   Interaction. The reference lifts its social buttons and CTAs 2px on hover;
+   that small displacement is most of what makes a page feel responsive to the
+   cursor. Cards had been reduced to a border colour change, which reads as
+   nothing happening.
+   -------------------------------------------------------------------------- */
+.btn, .figure, .cert-link, .also-card, .case-links > a, .snapshot,
+.side-social a, .to-top {
+  transition: transform var(--d-base) var(--e-out),
+              background var(--d-fast) var(--e-inout),
+              border-color var(--d-fast) var(--e-inout),
+              box-shadow var(--d-base) var(--e-out),
+              color var(--d-fast) var(--e-inout);
+}
+.btn:hover, .side-social a:hover, .to-top:hover { transform: translateY(-2px); }
+.figure:hover  { transform: translateY(-3px); }
+.also-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-3); }
+.cert-link:hover { transform: translateX(3px); }
+.case-links > a:hover { transform: translateY(-2px); }
+
+/* The figure numerals settle in as they count, so the digit change is not the
+   only thing moving. */
+.figure-n { transition: transform var(--d-slow) var(--e-out); }
+[data-shown='true'] .figure-n { transform: none; }
+
+/* A longer cascade: a row of five figures arriving together reads as one
+   block appearing, which is exactly the "nothing is happening" feeling. */
+.figures .figure:nth-child(1) { --i: 0; }
+.figures .figure:nth-child(2) { --i: 1; }
+.figures .figure:nth-child(3) { --i: 2; }
+.figures .figure:nth-child(4) { --i: 3; }
+.figures .figure:nth-child(5) { --i: 4; }
+
+/* The accent tick above each section heading draws itself in. */
+.section-head { position: relative; }
+.h-section::before {
+  transition: width var(--d-slow) var(--e-out);
+}
+[data-shown='true'].h-section::before,
+[data-shown='true'] .h-section::before { width: 44px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover, .figure:hover, .also-card:hover, .cert-link:hover,
+  .case-links > a:hover, .side-social a:hover, .to-top:hover { transform: none; }
+}
