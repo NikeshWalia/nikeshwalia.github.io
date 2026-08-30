@@ -119,8 +119,8 @@
     </a>
 
     <p class="side-name">Nikesh Walia</p>
-    <p class="side-role">QA Engineer at Techsapphire</p>
-    <p class="side-avail"><span class="dot" aria-hidden="true"></span>Open to roles</p>
+    <p class="side-role">QA Engineer</p>
+    <p class="side-avail"><span class="dot" aria-hidden="true"></span>Open to opportunities</p>
 
     <div class="side-social">
       <a href="https://www.linkedin.com/in/nikesh-walia/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
@@ -228,11 +228,11 @@
      under the hero as a mono footnote. -->
 <section class="section section--tight" aria-label="Profile" data-sec="profile">
   <div class="wrap">
-    <div class="snapshot" data-reveal>
+    <div class="snapshot" data-reveal="in">
       <h2 class="snapshot-h">Profile</h2>
       <dl class="snapshot-grid">
         <div><dt>Role</dt><dd>QA Engineer at <strong>Techsapphire Solutions</strong></dd></div>
-        <div><dt>Experience</dt><dd><strong>2 years</strong>, of which <strong>1.5+</strong> in QA</dd></div>
+        <div><dt>Experience</dt><dd><strong>2+ years</strong> in software quality</dd></div>
         <div><dt>Location</dt><dd><strong>Panchkula, India</strong></dd></div>
         <div><dt>Available</dt><dd><strong>Remote or on-site</strong></dd></div>
         <div><dt>Education</dt><dd><strong>B.Tech CSE</strong>, Chandigarh Engineering College 2024</dd></div>
@@ -265,35 +265,35 @@
   <div class="wrap">
     <div class="figures" data-reveal-group>
 
-      <a class="figure" href="#case-shopsphere" data-reveal>
+      <a class="figure" data-reveal href="#case-shopsphere">
         <span class="figure-n">5</span>
         <span class="figure-k">Defects the suite found</span>
         <span class="figure-d">Real bugs in ShopSphere, including an <b>oversell race</b> that let two customers buy the same unit. Each is written up with its root cause and its fix.</span>
         <span class="figure-go">Read the defect log</span>
       </a>
 
-      <a class="figure" href="#case-shopsphere" data-reveal>
+      <a class="figure" data-reveal href="#case-shopsphere">
         <span class="figure-n">916</span>
         <span class="figure-k">Automated tests written</span>
         <span class="figure-d">Across <b>seven layers</b>: unit, API, database, contract, security, integration and browser.</span>
         <span class="figure-go">See the platform</span>
       </a>
 
-      <a class="figure" href="#role-techsapphire" data-reveal>
+      <a class="figure" data-reveal href="#role-techsapphire">
         <span class="figure-n">30<i>+</i></span>
         <span class="figure-k">Caught before release</span>
         <span class="figure-d">Critical defects intercepted at Techsapphire across <b>1.5+ years</b> of releases.</span>
         <span class="figure-go">See the role</span>
       </a>
 
-      <a class="figure" href="#case-suite" data-reveal>
+      <a class="figure" data-reveal href="#case-suite">
         <span class="figure-n"><i>~</i>70<i>%</i></span>
         <span class="figure-k">Manual pass replaced</span>
         <span class="figure-d">Of a repeated regression cycle, absorbed by a suite that runs itself.</span>
         <span class="figure-go">How it works</span>
       </a>
 
-      <a class="figure" href="#case-suite" data-reveal>
+      <a class="figure" data-reveal href="#case-suite">
         <span class="figure-n">500<i>+</i></span>
         <span class="figure-k">Validated per run</span>
         <span class="figure-d">Live URLs, with <b>retry, timeout and redirect chain</b> handling in the runner.</span>
@@ -323,7 +323,7 @@
         <article class="case case--flag rvl" id="case-shopsphere" data-reveal
                  data-index-case="ShopSphere: e-commerce app and its quality platform"
                  data-index-sub="Python · pytest · Playwright · PostgreSQL · Docker · 916 tests">
-          <div class="case-head" data-case-toggle>
+          <div class="case-head" data-case-toggle data-reveal="right">
             <div>
               <div class="case-idx">
                 <b>01</b> &#183; Personal project &#183; 2026
@@ -333,7 +333,7 @@
               <p class="case-sum">
                 A working storefront with real inventory, money arithmetic and authorisation, plus a
                 <strong>916 test</strong> platform across seven layers that proves it. I built the
-                application <em>so that</em> it could be broken: the interesting problems in quality
+                application so that it could be broken: the interesting problems in quality
                 engineering only appear when you own both sides.
               </p>
               <div class="case-stack">
@@ -362,7 +362,7 @@
             </div>
 
             <!-- The seven layers, as a shape rather than a paragraph. -->
-            <div class="artifact artifact--layers" aria-label="Test layers and their sizes">
+            <div class="artifact artifact--layers" data-reveal="left" aria-label="Test layers and their sizes">
               <div class="artifact-head">7 layers <span>916 tests</span></div>
               <div class="lyr"><span class="lyr-n">API</span><span class="lyr-bar" style="--w:100%"></span><span class="lyr-v">238</span></div>
               <div class="lyr"><span class="lyr-n">Unit</span><span class="lyr-bar" style="--w:99%"></span><span class="lyr-v">235</span></div>
@@ -570,7 +570,7 @@
         <article class="case rvl" id="case-suite" data-reveal
                  data-index-case="Restaurant Monitoring System: Selenium automation suite"
                  data-index-sub="Selenium · Python · retry and redirect handling · Excel reporting">
-          <div class="case-head" data-case-toggle>
+          <div class="case-head" data-case-toggle data-reveal="right">
             <div>
               <div class="case-idx">
                 <b>02</b> &#183; Techsapphire
@@ -596,7 +596,7 @@
             </div>
 
             <!-- The artifact the suite actually produces: its Excel report. -->
-            <div class="artifact" aria-label="Shape of the generated Excel report">
+            <div class="artifact" data-reveal="left" aria-label="Shape of the generated Excel report">
               <div class="artifact-head">results.xlsx <span>per run</span></div>
               <div class="artifact-row"><span class="a-name">login_flow</span><span class="a-val ok">PASS</span><span class="a-ms">0.82s</span></div>
               <div class="artifact-row"><span class="a-name">checkout_step_2</span><span class="a-val rt">RETRY</span><span class="a-ms">2.30s</span></div>
@@ -822,6 +822,10 @@
     <div>
       <div class="section-head" data-reveal-group>
         <h2 class="h-section" data-reveal><span class="sr-only">Certifications: </span>Credentials, and what I'm studying next</h2>
+        <p class="h-sub" data-reveal>
+          Four of these are from this year. I pick up whatever the next problem needs,
+          which is how Playwright, Docker and CI went from unfamiliar to load bearing.
+        </p>
       </div>
 
       <!-- Two tiers, not one flat list. Four QA credentials competing for
@@ -1016,6 +1020,11 @@
     </div>
   </div>
 </div>
+
+<!-- Appears once the page has scrolled, as the reference's does. -->
+<a href="#top" class="to-top" data-to-top aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</a>
 
 <div class="toast" data-toast data-open="false" role="status" aria-live="polite">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>

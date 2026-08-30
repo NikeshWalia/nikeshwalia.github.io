@@ -129,8 +129,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-family: var(--font-sans);
   font-size: var(--t-micro);
   font-weight: 600;
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
 }
 .rail-label span {
@@ -179,7 +177,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: var(--s-2);
   height: 48px;
   padding-inline: var(--s-6);
-  border-radius: var(--r-md);
+  border-radius: var(--r-full);   /* hers: 999px */
   background: var(--btn-bg);
   color: var(--btn-fg);
   font-size: var(--t-sm);
@@ -200,9 +198,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
    feedback, not decoration, and that block already neutralises the easing. */
 .btn--sm {
   height: 36px;
-  padding-inline: var(--s-4);
+  padding-inline: var(--s-5);
   font-size: var(--t-xs);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-full);
 }
 .btn--sm svg { width: 15px; height: 15px; }
 
@@ -700,8 +698,6 @@ kbd {
 .runtable thead th {
   font-weight: 400;
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
   border-bottom: 1px solid var(--line);
   padding-block: var(--s-2);
@@ -872,7 +868,6 @@ kbd {
 .lyr-bar::after {
   content: '';
   position: absolute; inset: 0 auto 0 0;
-  width: var(--w, 0%);
   border-radius: inherit;
   background: var(--text);
   opacity: .85;
@@ -897,8 +892,6 @@ kbd {
 .flow-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .flow-cap {
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
   margin-bottom: 2px;
 }
@@ -989,8 +982,6 @@ kbd {
   font-weight: 600;
   color: var(--text-3);
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   margin-right: 4px;
 }
 .defect code {
@@ -1017,8 +1008,6 @@ kbd {
   border: 1px solid;
   font-size: var(--t-micro);
   font-weight: 500;
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   white-space: nowrap;
 }
 .sev--block { color: var(--fail); border-color: color-mix(in srgb, var(--fail) 36%, transparent); background: color-mix(in srgb, var(--fail) 8%, transparent); }
@@ -1033,8 +1022,6 @@ kbd {
 .also-h {
   font-size: var(--t-micro);
   font-weight: 500;
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
   margin-bottom: var(--s-3);
 }
@@ -1055,8 +1042,6 @@ kbd {
 }
 .also-k {
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--hue-4);
 }
 .also-t {
@@ -1093,7 +1078,7 @@ kbd {
 }
 .role-prod h4 {
   font-size: var(--t-md);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--text);
   margin-bottom: var(--s-3);
@@ -1226,8 +1211,6 @@ kbd {
 }
 .tile-k {
   font-size: var(--t-mono);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
   margin-bottom: var(--s-4);
 }
@@ -1278,8 +1261,6 @@ kbd {
 .case-idx {
   font-size: var(--t-mono);
   color: var(--text-3);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   margin-bottom: var(--s-3);
 }
 .case-idx b { color: var(--accent-text); font-weight: 500; }
@@ -1311,8 +1292,6 @@ kbd {
 }
 .artifact-head span {
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
 }
 .artifact-row {
@@ -1399,8 +1378,6 @@ kbd {
 .case-block h4 {
   font-size: var(--t-mono);
   font-weight: 500;
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
   margin-bottom: var(--s-3);
 }
@@ -1457,8 +1434,6 @@ kbd {
   gap: var(--s-3);
   font-size: var(--t-micro);
   font-weight: 500;
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
   margin-bottom: 6px;
 }
@@ -1512,8 +1487,6 @@ kbd {
 .cap h3 {
   font-size: var(--t-mono);
   font-weight: 500;
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text);
   margin-bottom: var(--s-4);
 }
@@ -1550,7 +1523,7 @@ kbd {
 }
 .cta h2 {
   font-size: var(--t-2xl);
-  font-weight: 600;
+  font-weight: 700;
   line-height: var(--lh-snug); /* was inheriting body 1.62: display type at paragraph leading */
   letter-spacing: var(--tr-tight);
   text-wrap: balance;
@@ -1635,8 +1608,6 @@ kbd {
 .social-k {
   display: block;
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
 }
 .social-v { display: block; font-size: var(--t-sm); color: var(--text); }
@@ -1715,8 +1686,6 @@ kbd {
 .cmdk-group {
   padding: var(--s-3) var(--s-3) var(--s-1);
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
 }
 .cmdk-item {
@@ -1793,13 +1762,32 @@ kbd {
 /* --------------------------------------------------------------------------
    Reveal: a single orchestrated entrance, staggered by index.
    -------------------------------------------------------------------------- */
+/* Entrances. The reference runs AOS at 850ms / ease-out-cubic with a 100px
+   fade-up. Mine was 16px in 420ms, which is below the distance at which the
+   eye registers an entrance at all: the page looked like it simply appeared.
+   Direction is opt-in per element so a two-column block can come in from both
+   sides rather than everything sliding the same way. */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translate3d(0, var(--rise), 0);
   transition: opacity var(--d-slow) var(--e-out), transform var(--d-slow) var(--e-out);
   transition-delay: calc(var(--i, 0) * var(--stagger));
+  will-change: opacity, transform;
 }
-[data-reveal][data-shown='true'] { opacity: 1; transform: none; }
+[data-reveal='right'] { transform: translate3d(calc(var(--rise) * -0.6), 0, 0); }
+[data-reveal='left']  { transform: translate3d(calc(var(--rise) * 0.6), 0, 0); }
+[data-reveal='in']    { transform: scale(.97); }
+
+[data-reveal][data-shown='true'] {
+  opacity: 1;
+  transform: none;
+  will-change: auto;   /* released once the entrance is done */
+}
+
+/* Bars fill as their card arrives, rather than being drawn already full. */
+.lyr-bar::after { width: 0; transition: width 900ms var(--e-out); transition-delay: calc(var(--i, 0) * 60ms + 200ms); }
+[data-shown='true'] .lyr-bar::after,
+[data-shown='true'].lyr .lyr-bar::after { width: var(--w, 0%); }
 
 /* --------------------------------------------------------------------------
    Responsive
@@ -1927,6 +1915,7 @@ kbd {
     transition-duration: 1ms !important;
   }
   [data-reveal] { opacity: 1; transform: none; }
+  .lyr-bar::after { width: var(--w, 0%); transition: none; }
   .nav-panel, .nav-chev { transition: none; }
   .hero::before { display: none; }
   .rvl::before, .rvl::after { display: none; }
@@ -2101,8 +2090,6 @@ kbd {
 .cert-tier-h {
   font-size: var(--t-micro);
   font-weight: 500;
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
   margin-bottom: var(--s-4);
 }
@@ -2176,8 +2163,6 @@ kbd {
   padding-bottom: var(--s-3);
   border-bottom: 1px solid var(--text);
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
 }
 .masthead-id { font-weight: 500; color: var(--text); }
@@ -2187,8 +2172,6 @@ kbd {
 .hero-kicker {
   margin-top: var(--s-8);
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
   margin-bottom: var(--s-4);
 }
@@ -2247,8 +2230,6 @@ kbd {
 }
 .figure-k {
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text);
   padding-bottom: var(--s-3);
   margin-bottom: var(--s-3);
@@ -2265,8 +2246,6 @@ kbd {
   margin-top: auto;
   padding-top: var(--s-4);
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
   transition: color var(--d-fast) var(--e-inout);
 }
@@ -2304,8 +2283,6 @@ kbd {
 .hero .hero-role {
   margin-top: 2px;
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
 }
 
@@ -2476,7 +2453,6 @@ h1, h2, h3, h4, h5, h6, .side-name, .footer-claim, .also-t {
 }
 /* The few headings that are genuinely labels stay mono. */
 .rail-label, .snapshot-h, .cert-tier-h, .also-h, .case-block h4 {
-  letter-spacing: var(--tr-wide);
   font-weight: 500;
 }
 .hero-hook { letter-spacing: -0.02em; line-height: 1.06; }
@@ -2591,8 +2567,6 @@ h1, h2, h3, h4, h5, h6, .side-name, .footer-claim, .also-t {
 .snapshot-h {
   font-size: var(--t-micro);
   font-weight: 500;
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
   padding-bottom: var(--s-4);
   margin-bottom: var(--s-5);
@@ -2613,8 +2587,6 @@ h1, h2, h3, h4, h5, h6, .side-name, .footer-claim, .also-t {
 }
 .snapshot-grid dt {
   font-size: var(--t-micro);
-  letter-spacing: var(--tr-wide);
-  text-transform: uppercase;
   color: var(--text-3);
 }
 .snapshot-grid dd { font-size: var(--t-sm); color: var(--text-2); line-height: 1.5; }
@@ -2655,7 +2627,6 @@ h1, h2, h3, h4, h5, h6, .side-name, .footer-claim, .also-t {
 .figure-k, .flow-cap, .artifact-head, .runpanel-sub, .cap h3, .cert-tier h3 {
   font-family: var(--font-sans);
   font-weight: 600;
-  letter-spacing: var(--tr-wide);
 }
 
 
@@ -2752,3 +2723,73 @@ body { font-weight: 400; }
 .hero-inner { max-width: 820px; margin-inline: auto; }
 .hero .hero-lede { margin-inline: auto; }
 .hero .hero-actions, .hero .hero-stack { justify-content: center; }
+
+
+/* --------------------------------------------------------------------------
+   Page wash. The reference layers two low-alpha radial fields over a warm
+   gradient; it is what stops the cream reading as a flat swatch. Kept subtle
+   enough that no text sits on a shifting background.
+   -------------------------------------------------------------------------- */
+body {
+  background:
+    radial-gradient(circle at 12% 14%, rgba(224, 90, 42, .10), transparent 34%),
+    radial-gradient(circle at 82% 6%, rgba(90, 150, 135, .09), transparent 38%),
+    linear-gradient(160deg, #f9f3ea 0%, #f7f2ea 55%, #fdf3e7 100%);
+  background-attachment: fixed;
+}
+[data-theme='dark'] body {
+  background:
+    radial-gradient(circle at 12% 14%, rgba(240, 120, 70, .07), transparent 34%),
+    radial-gradient(circle at 82% 6%, rgba(90, 150, 135, .06), transparent 38%),
+    linear-gradient(160deg, #14161d 0%, #131519 55%, #171319 100%);
+  background-attachment: fixed;
+}
+
+
+/* --------------------------------------------------------------------------
+   Remaining parity fixes, each verified against the reference stylesheet.
+   -------------------------------------------------------------------------- */
+/* Its one uppercase string: 0.74rem, weight 700, 0.2em tracking. */
+.eyebrow { font-size: .74rem; font-weight: 700; letter-spacing: .2em; }
+
+/* #header .profile h1 is 1.55rem, not 1.4. */
+.side-name { font-size: 1.55rem; }
+
+/* .hero-subtitle and .nav-menu a declare no weight, so both are 400. */
+.hero-build { font-weight: 400; }
+.side-nav a { font-weight: 400; }
+
+/* .hero-cta and .timeline-item .org inherit the 16px body size. */
+.btn { font-size: var(--t-base); }
+.role-org { font-size: var(--t-base); }
+
+/* Its h2 sets no line-height; 1.1 was crowding the descenders. */
+.h-section { line-height: normal; }
+
+/* Its content column is a 1320px container, not unbounded. */
+.shell .wrap { max-width: 1320px; }
+
+
+/* Floating back-to-top, as the reference has. Hidden until there is somewhere
+   to go back to. */
+.to-top {
+  position: fixed;
+  right: 20px; bottom: 20px;
+  z-index: 80;
+  display: grid; place-items: center;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--rail-fill);
+  color: #fff;
+  box-shadow: var(--shadow-3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity var(--d-base) var(--e-inout),
+              transform var(--d-base) var(--e-out),
+              visibility var(--d-base);
+}
+.to-top svg { width: 18px; height: 18px; }
+.to-top[data-on='true'] { opacity: 1; visibility: visible; transform: none; }
+.to-top:hover { filter: brightness(1.08); }
+@media (max-width: 1080px) { .to-top { bottom: 16px; right: 16px; } }

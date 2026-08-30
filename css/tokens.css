@@ -106,7 +106,7 @@
      DOUBLE this value plus whatever inner padding the last block contributes.
      Measured at 2560px: 88px here produced 209-230px seams. 64px lands the
      ink-to-ink seam at ~135px, which reads as rhythm rather than a void. */
-  --s-section: clamp(48px, 5vw, 64px);
+  --s-section: clamp(56px, 6vw, 82px);   /* hers: padding 82px 0 */
 
   /* ---- Layout ---------------------------------------------------------- */
   --wrap: 1180px;
@@ -117,18 +117,24 @@
   --header-h: 78px;
 
   /* ---- Radius ---------------------------------------------------------- */
-  --r-sm: 3px; --r-md: 4px; --r-lg: 6px; --r-xl: 8px; --r-full: 999px;
+  /* Matched to the reference: nav items 12px, cards 16px, panels 20px,
+     buttons fully round. Sharp corners were reading as severe. */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 20px; --r-full: 999px;
+
+  /* Entrance travel. AOS's fade-up uses 100px; 64px is enough to read as
+     motion on a denser page without the content visibly jumping. */
+  --rise: 64px;
 
   /* ---- Motion ---------------------------------------------------------- */
-  --e-out:   cubic-bezier(.22, 1, .36, 1);      /* entrances */
+  --e-out:   cubic-bezier(.33, 1, .68, 1);      /* ease-out-cubic, as the reference uses */
   --e-inout: cubic-bezier(.4, 0, .2, 1);        /* state changes */
   --d-fast: 120ms;
   --d-base: 220ms;
   /* 620ms with a 10px travel spent ~465ms in imperceptible opacity crawl:
      the expo-out easing covers ~80% of the distance in the first ~155ms.
      Shorter duration + longer travel makes the whole animation legible. */
-  --d-slow: 420ms;
-  --stagger: 55ms;
+  --d-slow: 850ms;   /* hers: AOS duration 850 */
+  --stagger: 100ms;  /* hers: data-aos-delay 100-150 */
 
   /* ---- Light theme -----------------------------------------------------
      Warm paper and a rust accent. Cream reads as printed matter, and rust is

@@ -208,6 +208,15 @@ export function initHeader() {
    animates on the compositor and never triggers layout. Reads are coalesced
    to one per frame because scroll fires far above display refresh rate.
    ------------------------------------------------------------------------ */
+/* Reveals the back-to-top control once the page has scrolled a screen. */
+export function initToTop() {
+  const btn = document.querySelector('[data-to-top]');
+  if (!btn) return;
+  const update = () => { btn.dataset.on = String(window.scrollY > window.innerHeight * 0.8); };
+  addEventListener('scroll', update, { passive: true });
+  update();
+}
+
 export function initProgress() {
   const bar = document.querySelector('[data-progress]');
   if (!bar) return;
