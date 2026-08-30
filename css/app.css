@@ -663,7 +663,6 @@ kbd {
   padding: var(--s-3) var(--s-4);
   border-bottom: 1px solid var(--line);
   background: var(--bg-code);
-  font-family: var(--font-mono);
   font-size: var(--t-mono);
   color: var(--text-2);
 }
@@ -689,7 +688,6 @@ kbd {
 .runtable {
   width: 100%;
   border-collapse: collapse;
-  font-family: var(--font-mono);
   font-size: var(--t-mono);
 }
 .runtable th, .runtable td { padding: 9px var(--s-4); text-align: right; }
@@ -738,7 +736,6 @@ kbd {
   padding: var(--s-3) var(--s-4);
   border-top: 1px solid var(--line);
   background: var(--bg-code);
-  font-family: var(--font-mono);
   font-size: var(--t-mono);
   color: var(--text-3);
 }
@@ -851,7 +848,7 @@ kbd {
 .artifact--layers { display: block; }
 .lyr {
   display: grid;
-  grid-template-columns: 84px minmax(0, 1fr) 34px;
+  grid-template-columns: 96px minmax(0, 1fr) 44px;
   align-items: center;
   gap: var(--s-2);
   padding: 4px 0;
@@ -1277,7 +1274,6 @@ kbd {
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   background: var(--bg-code);
-  font-family: var(--font-mono);
   font-size: var(--t-mono);
   overflow: hidden;
 }
@@ -1875,7 +1871,7 @@ kbd {
   .defect { padding-inline: var(--s-4); }
   .also-card { padding-inline: var(--s-5); }
   /* 72px of fixed label column is too much of a 320px screen. */
-  .lyr { grid-template-columns: 76px minmax(0, 1fr) 30px; }
+  .lyr { grid-template-columns: 88px minmax(0, 1fr) 40px; }
   .role-prod { padding-left: var(--s-4); }
 }
 
@@ -2840,3 +2836,190 @@ body {
   .btn:hover, .figure:hover, .also-card:hover, .cert-link:hover,
   .case-links > a:hover, .side-social a:hover, .to-top:hover { transform: none; }
 }
+
+
+/* ==========================================================================
+   MOTION SYSTEM
+   ========================================================================== */
+
+/* --- Headings arrive a word at a time ---------------------------------- */
+[data-split] .w {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.5em);
+  transition: opacity 620ms var(--e-out), transform 620ms var(--e-out);
+  transition-delay: calc(var(--w-i, 0) * 55ms);
+}
+[data-shown='true'][data-split] .w,
+[data-split].hero-name .w { opacity: 1; transform: none; }
+/* The hero name is above the fold, so it plays on load rather than on scroll. */
+.hero-name .w { animation: word-in 700ms var(--e-out) both; animation-delay: calc(var(--w-i, 0) * 70ms + 120ms); }
+@keyframes word-in { from { opacity: 0; transform: translateY(0.5em); } to { opacity: 1; transform: none; } }
+
+/* --- Cursor-tracked highlight on cards ---------------------------------
+   initRevealGlow writes --rvl-x / --rvl-y per card on a rAF, so the card
+   knows where the pointer is relative to itself. A pointer-reactive surface
+   is the difference between a page you look at and one you touch. */
+.rvl { position: relative; isolation: isolate; }
+.rvl::before {
+  content: '';
+  position: absolute; inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(220px circle at var(--rvl-x, 50%) var(--rvl-y, 50%),
+              color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%);
+  transition: opacity var(--d-base) var(--e-inout);
+}
+.rvl:hover::before { opacity: 1; }
+
+/* --- Sequenced rows ----------------------------------------------------- */
+/* Chips, table rows and artifact lines land one after another instead of the
+   whole block appearing at once. */
+[data-shown='true'] .cap-list .chip { animation: pop-in 420ms var(--e-out) both; }
+.cap-list .chip:nth-child(1) { animation-delay: 60ms; }
+.cap-list .chip:nth-child(2) { animation-delay: 110ms; }
+.cap-list .chip:nth-child(3) { animation-delay: 160ms; }
+.cap-list .chip:nth-child(4) { animation-delay: 210ms; }
+.cap-list .chip:nth-child(5) { animation-delay: 260ms; }
+.cap-list .chip:nth-child(6) { animation-delay: 310ms; }
+@keyframes pop-in { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: none; } }
+
+[data-shown='true'] .artifact-row { animation: row-in 480ms var(--e-out) both; }
+.artifact-row:nth-child(2) { animation-delay: 120ms; }
+.artifact-row:nth-child(3) { animation-delay: 200ms; }
+.artifact-row:nth-child(4) { animation-delay: 280ms; }
+.artifact-row:nth-child(5) { animation-delay: 360ms; }
+@keyframes row-in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+
+[data-shown='true'] .lyr { animation: row-in 460ms var(--e-out) both; }
+.lyr:nth-child(2) { animation-delay: 80ms; }
+.lyr:nth-child(3) { animation-delay: 140ms; }
+.lyr:nth-child(4) { animation-delay: 200ms; }
+.lyr:nth-child(5) { animation-delay: 260ms; }
+.lyr:nth-child(6) { animation-delay: 320ms; }
+.lyr:nth-child(7) { animation-delay: 380ms; }
+.lyr:nth-child(8) { animation-delay: 440ms; }
+
+/* --- The section number rides along with its section -------------------- */
+.section-head .rail-label {
+  position: sticky;
+  top: calc(var(--s-6));
+  z-index: 3;
+}
+
+/* --- Everything above is decoration; none of it runs for someone who has
+       asked the OS for less motion. ------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  [data-split] .w,
+  .hero-name .w { opacity: 1; transform: none; animation: none; }
+  [data-shown='true'] .cap-list .chip,
+  [data-shown='true'] .artifact-row,
+  [data-shown='true'] .lyr { animation: none; opacity: 1; transform: none; }
+  .rvl::before { display: none; }
+  .section-head .rail-label { position: static; }
+}
+
+/* Hero drift, driven by the custom properties initHeroParallax writes. */
+.hero-inner {
+  transform: translate3d(0, var(--hero-shift, 0), 0);
+  opacity: var(--hero-fade, 1);
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-inner { transform: none; opacity: 1; will-change: auto; }
+}
+
+
+/* ==========================================================================
+   READABILITY PASS
+   Measured against the reference: it sets card content in full ink (#1e2430)
+   and reserves the muted grey for section subtitles. This page had it the
+   other way round: 101 muted uses against 50 ink, and 51 elements at 12-13px.
+   Small grey text on cream is the "dull and hard to read" problem.
+   ========================================================================== */
+
+/* --- Profile card. Hers: a real 28px serif heading, bold ink labels, ink
+       values. Mine was a 12px grey label and grey values. ----------------- */
+.snapshot-h {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text);
+  padding-bottom: var(--s-5);
+  margin-bottom: var(--s-5);
+}
+.snapshot-grid > div { padding-bottom: var(--s-5); }
+.snapshot-grid dt {
+  font-size: var(--t-sm);
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text);
+}
+.snapshot-grid dd { font-size: var(--t-sm); color: var(--text); }
+.snapshot-grid dd strong { font-weight: 700; }
+
+/* --- Small labels across the page. 12px grey was unreadable; these carry
+       real information (section numbers, dates, group names). ------------ */
+.rail-label, .cert-tier-h, .also-h, .figure-k, .case-idx, .role-when,
+.flow-cap, .artifact-head, .cap h3, .eyebrow {
+  font-size: var(--t-xs);
+  color: var(--text-2);
+}
+.cap h3 { font-size: var(--t-sm); font-weight: 700; color: var(--text); }
+.figure-k { font-weight: 700; color: var(--text); }
+.rail-label span { color: var(--accent-text); font-weight: 700; }
+.role-when { font-weight: 700; color: var(--text-2); }
+.cert-tier-h, .also-h { font-weight: 700; color: var(--text-2); }
+
+/* --- Body copy that carries the argument goes to ink, not grey. --------- */
+.figure-d, .cert-meta, .case-links-note, .runpanel-note, .flow-note,
+.defect p, .case-block li, .role ul li { color: var(--text-2); }
+.figure-d b, .defect b { color: var(--text); }
+.cert-name { color: var(--text); font-weight: 700; }
+.cert-meta { font-size: var(--t-xs); }
+
+/* --- Emphasis. The user asked for the important things to stand out, so
+       every <strong> in running text is ink at 700 rather than inheriting
+       the muted colour of its paragraph. --------------------------------- */
+.case-block li strong, .role ul li strong, .figure-d strong,
+.hero-lede strong, .defect p strong, .snapshot-grid dd strong,
+.case-sum strong, .cap-evidence strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* --- The smallest type on the page moves off 12px. --------------------- */
+.artifact, .lyr, .runtable, .runpanel-head, .runpanel-foot, .runpanel-note,
+.social-k, .footer-base, .side-role, .side-avail {
+  font-size: var(--t-xs);
+}
+
+
+/* --------------------------------------------------------------------------
+   Panels and tables read in the page sans, not a terminal face. Numbers keep
+   tabular figures so columns still line up.
+   -------------------------------------------------------------------------- */
+.runpanel-head, .runpanel-foot, .runpanel-note, .runtable,
+.artifact, .artifact-head, .a-name, .a-val, .a-ms, .artifact-foot,
+.lyr, .lyr-n, .lyr-v, .flow-cap, .flow-node {
+  font-family: var(--font-sans);
+}
+.runtable td, .runtable tfoot th, .lyr-v, .a-ms, .a-val, .artifact-head span {
+  font-variant-numeric: tabular-nums;
+}
+.lyr-n { font-size: var(--t-xs); color: var(--text-2); }
+.lyr-v { font-size: var(--t-xs); font-weight: 700; color: var(--text); }
+.artifact-head { font-size: var(--t-xs); font-weight: 700; color: var(--text); }
+.a-name { font-size: var(--t-xs); color: var(--text-2); }
+.a-val, .a-ms { font-size: var(--t-xs); }
+.artifact-foot { font-size: var(--t-xs); color: var(--text-2); }
+.runpanel-head, .runpanel-foot { font-size: var(--t-xs); }
+
+/* WhatsApp keeps its own green so it is recognisable at a glance, which is
+   the entire point of putting a branded channel on the page. */
+.channel--wa svg { color: #25d366; }
+.side-social a[aria-label='WhatsApp']:hover { background: #25d366; color: #fff; }

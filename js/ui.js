@@ -214,6 +214,59 @@ export function initHeader() {
    so the loop is driven by ELAPSED TIME with a hard end, not by accumulating
    increments: whatever happens to the frame rate, the last write is always
    the exact target. A watchdog also force-completes if rAF is throttled. */
+/* Splits section headings into words so they can arrive one after another.
+   Only bare text is split: the visually-hidden section prefix and any inline
+   markup are left alone, so the accessible name is unchanged. Words are
+   inline spans, which screen readers concatenate normally. */
+/* The hero drifts up and dims slightly as it leaves, so the first scroll has
+   something to respond to rather than the page simply sliding. Driven off a
+   rAF-throttled scroll listener; nothing reads layout in the handler. */
+export function initHeroParallax() {
+  const hero = document.querySelector('.hero-inner');
+  if (!hero || prefersReducedMotion) return;
+  let queued = false;
+  const paint = () => {
+    queued = false;
+    const y = window.scrollY;
+    const h = window.innerHeight;
+    if (y > h) return;                       // past the hero: stop working
+    const t = Math.min(1, y / (h * 0.85));
+    hero.style.setProperty('--hero-shift', `${(t * -38).toFixed(1)}px`);
+    hero.style.setProperty('--hero-fade', String(1 - t * 0.75));
+  };
+  addEventListener('scroll', () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(paint);
+  }, { passive: true });
+  paint();
+}
+
+export function initSplitHeadings() {
+  const heads = [...document.querySelectorAll('[data-split]')];
+  if (!heads.length) return;
+  if (prefersReducedMotion) return;   // nothing to stagger
+
+  heads.forEach((h) => {
+    [...h.childNodes].forEach((node) => {
+      if (node.nodeType !== Node.TEXT_NODE) return;
+      const text = node.textContent;
+      if (!text.trim()) return;
+      const frag = document.createDocumentFragment();
+      text.split(/(\s+)/).forEach((chunk) => {
+        if (!chunk.trim()) { frag.append(chunk); return; }
+        const w = document.createElement('span');
+        w.className = 'w';
+        w.textContent = chunk;
+        frag.append(w);
+      });
+      node.replaceWith(frag);
+    });
+    // Index each word so CSS can stagger without a per-word inline style.
+    [...h.querySelectorAll('.w')].forEach((w, i) => w.style.setProperty('--w-i', Math.min(i, 12)));
+  });
+}
+
 export function initCounters() {
   const els = [...document.querySelectorAll('[data-count]')];
   if (!els.length) return;
@@ -228,7 +281,10 @@ export function initCounters() {
   const run = (el) => {
     const target = Number(el.dataset.count);
     if (!Number.isFinite(target)) return;
-    const DUR = 1100;
+    // Short on purpose. Every frame before the last shows a number that is
+    // not true, and on a page whose whole argument is "these figures are
+    // real", a long count is a long time spent displaying a wrong one.
+    const DUR = 700;
     const start = performance.now();
     let done = false;
     const finish = () => { if (!done) { done = true; settle(el, target); } };
@@ -239,11 +295,16 @@ export function initCounters() {
       if (done) return;
       const t = Math.min(1, (now - start) / DUR);
       const eased = 1 - Math.pow(1 - t, 3);          // ease-out-cubic
-      el.textContent = String(Math.round(target * eased));
+      const from = Number(el.dataset.from || 0);
+      el.textContent = String(Math.round(from + (target - from) * eased));
       if (t < 1) requestAnimationFrame(step);
       else { clearTimeout(watchdog); finish(); }
     };
-    el.textContent = '0';
+    // Small figures start partway: counting 0,1,2,3,4 to reach 5 spends most
+    // of the animation on a number that misrepresents the work.
+    const from = target <= 40 ? Math.floor(target * 0.4) : 0;
+    el.dataset.from = String(from);
+    el.textContent = String(from);
     requestAnimationFrame(step);
   };
 
