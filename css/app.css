@@ -2078,9 +2078,9 @@ kbd {
 }
 /* --------------------------------------------------------------------------
    Certifications. A two-column list rather than cards: these are short
-   factual lines, and card chrome around six one-liners would out-weigh the
-   content. The in-progress item is marked rather than hidden, because
-   "studying for ISTQB" is itself a signal worth showing.
+   factual lines, and card chrome around fifteen one-liners would out-weigh
+   the content. Grouped by tier so a reader scanning for automation depth
+   does not have to read the cloud and soft-skills courses first.
    -------------------------------------------------------------------------- */
 .cert-tier + .cert-tier { margin-top: var(--s-10); }
 .cert-tier-h {
@@ -2140,8 +2140,6 @@ kbd {
   color: var(--hue, var(--accent-text));
   font-weight: 700;
 }
-/* The one you are actively working toward leads the list and keeps the hue. */
-.cert--now { border-left-color: var(--hue, var(--accent)); }
 
 @media (max-width: 780px) {
   .certs { grid-template-columns: minmax(0, 1fr); }
@@ -3019,7 +3017,20 @@ body {
 .artifact-foot { font-size: var(--t-xs); color: var(--text-2); }
 .runpanel-head, .runpanel-foot { font-size: var(--t-xs); }
 
-/* WhatsApp keeps its own green so it is recognisable at a glance, which is
-   the entire point of putting a branded channel on the page. */
-.channel--wa svg { color: #25d366; }
-.side-social a[aria-label='WhatsApp']:hover { background: #25d366; color: #fff; }
+
+
+/* The "more on LinkedIn" button carries a long label plus two icons. .btn is
+   white-space: nowrap with a fixed 48px height, so on a 375px screen it ran
+   past the viewport. Below the phone breakpoint it wraps and takes the full
+   width instead. */
+@media (max-width: 560px) {
+  .section-cta .btn {
+    width: 100%;
+    height: auto;
+    min-height: 48px;
+    padding-block: var(--s-3);
+    white-space: normal;
+    text-align: center;
+    line-height: 1.35;
+  }
+}

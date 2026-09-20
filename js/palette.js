@@ -90,7 +90,6 @@ export function init() {
       { group: 'Actions', icon: 'file',  title: 'Download resume (PDF)', sub: 'Nikesh_Walia_CV.pdf', run: download },
       { group: 'Actions', icon: 'mail',  title: 'Send an email',         sub: 'nikeshwalia@gmail.com', run: () => { location.href = 'mailto:nikeshwalia@gmail.com'; } },
       { group: 'Actions', icon: 'copy',  title: 'Copy email address',    sub: 'nikeshwalia@gmail.com', run: () => copyValue('nikeshwalia@gmail.com') },
-      { group: 'Actions', icon: 'copy',  title: 'Copy phone number',     sub: '+91 62396 77566', run: () => copyValue('+916239677566') },
       { group: 'Actions', icon: 'link',  title: 'Open LinkedIn profile', sub: 'linkedin.com/in/nikesh-walia', run: () => window.open('https://www.linkedin.com/in/nikesh-walia/', '_blank', 'noopener') },
       { group: 'Actions', icon: 'theme', title: 'Cycle theme',           sub: 'light → dark → system', run: () => toast(`Theme: ${theme.cycle()}`) },
     ];
