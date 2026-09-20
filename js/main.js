@@ -35,6 +35,15 @@ initThemeSwitchKeys((pref) => theme.set(pref));
 // rather than sniffing the DOM for its data attribute.
 const cmdk = palette.init();
 
+/* The rail advertises Ctrl+K. On a Mac that is the wrong key, and palette.js
+   already accepts either modifier, so only the label needs correcting. Spelled
+   "Cmd" rather than the loop glyph: the subset fonts carry no U+2318 and it
+   would render as a box. */
+const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+if (isMac) {
+  document.querySelectorAll('[data-kbd-mod]').forEach((el) => { el.textContent = 'Cmd'; });
+}
+
 /* Year in the footer, so the page never goes stale. */
 const year = document.querySelector('[data-year]');
 if (year) year.textContent = String(new Date().getFullYear());

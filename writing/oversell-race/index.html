@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>The lock worked. Two customers still bought the same unit. | Nikesh Walia</title>
+<meta name="description" content="A row lock that blocked correctly, an ORM identity map that handed back the stale object anyway, and why the two thread test caught what the six thread test missed.">
+<meta name="author" content="Nikesh Walia">
+<link rel="canonical" href="https://nikeshwalia.github.io/writing/oversell-race/">
+
+<meta name="theme-color" content="#f7f1e8">
+
+<!-- Same policy as the home page. The hash below covers the inline theme
+     resolver only; if that script's bytes change, recompute it or the theme
+     stops resolving before paint. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ArM/zF9N1DSCy0BsRnz9GAdNbQWt+mR2hnGeRFYz4A0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Nikesh Walia">
+<meta property="og:title" content="The lock worked. Two customers still bought the same unit.">
+<meta property="og:description" content="A row lock that blocked correctly, an ORM identity map that handed back the stale object anyway, and why the two thread test caught what the six thread test missed.">
+<meta property="og:url" content="https://nikeshwalia.github.io/writing/oversell-race/">
+<meta property="og:image" content="https://nikeshwalia.github.io/writing/oversell-race/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The lock worked. Two customers still bought the same unit. A write up by Nikesh Walia.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The lock worked. Two customers still bought the same unit.">
+<meta name="twitter:description" content="A lock that blocked correctly and still lost the update, found by a two thread test that a six thread test missed.">
+<meta name="twitter:image" content="https://nikeshwalia.github.io/writing/oversell-race/og.png">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%2314110f'/%3E%3Ctext x='16' y='21.5' font-family='ui-monospace,monospace' font-size='13' font-weight='700' fill='%23fff' text-anchor='middle'%3ENW%3C/text%3E%3C/svg%3E">
+
+<link rel="preload" href="/fonts/SpaceGrotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/Fraunces.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/app.css">
+
+<script>
+  // Resolve the theme before first paint so there is never a flash of the
+  // wrong palette. Deliberately inline and blocking; it is ~20 lines.
+  (function () {
+    try {
+      var p = localStorage.getItem('theme-preference') || 'system';
+      var dark = p === 'dark' || (p === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    } catch (e) {}
+  })();
+</script>
+
+<style>
+  /* Article page. Deliberately no rail: a person who arrived from a shared
+     link came to read one thing, and the site navigation is noise until they
+     have. One way back, at the top and at the end. */
+  .art { max-width: 760px; margin-inline: auto; padding: clamp(28px, 5vw, 56px) clamp(20px, 5vw, 32px) clamp(64px, 8vw, 104px); }
+
+  .art-back {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: var(--t-sm); color: var(--text-3); text-decoration: none;
+    padding: 6px 12px 6px 8px; border-radius: var(--r-full);
+    border: 1px solid transparent;
+    transition: color 140ms var(--e-out), border-color 140ms var(--e-out), background 140ms var(--e-out);
+  }
+  .art-back svg { width: 15px; height: 15px; flex: none; }
+  .art-back:hover { color: var(--text); border-color: var(--line); background: var(--bg-elev); }
+
+  .art-head { margin-top: clamp(28px, 5vw, 44px); }
+  .art-kicker { font-size: var(--t-sm); color: var(--accent-text); font-weight: 600; }
+  .art h1 {
+    margin-top: 12px;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.9rem, 4.6vw, 3rem); line-height: 1.08;
+    letter-spacing: -0.015em; text-wrap: balance;
+  }
+  .art-standfirst {
+    margin-top: 18px; font-size: clamp(1.02rem, 1.6vw, 1.18rem);
+    line-height: 1.6; color: var(--text-2); text-wrap: pretty;
+  }
+  .art-meta {
+    margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    font-size: var(--t-sm); color: var(--text-3);
+  }
+  .art-meta a { color: var(--accent-text); }
+
+  .art-body { margin-top: clamp(32px, 5vw, 48px); }
+  .art-body h2 {
+    margin-top: clamp(38px, 5vw, 56px); margin-bottom: 14px;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.35rem, 2.4vw, 1.7rem); line-height: 1.2; text-wrap: balance;
+  }
+  .art-body p { margin-top: 16px; line-height: 1.72; color: var(--text-2); text-wrap: pretty; }
+  .art-body p strong, .art-body li strong { color: var(--text); font-weight: 600; }
+  .art-body > p:first-child { margin-top: 0; }
+  .art-body ul { margin-top: 16px; padding-left: 0; list-style: none; }
+  .art-body ul li {
+    position: relative; padding-left: 22px; margin-top: 12px;
+    line-height: 1.7; color: var(--text-2); text-wrap: pretty;
+  }
+  .art-body ul li::before {
+    content: ''; position: absolute; left: 4px; top: .68em;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+  }
+  .art-body a { color: var(--accent-text); text-underline-offset: 3px; }
+
+  /* Inline identifiers and the code blocks. The mono face is already loaded
+     for the home page's snippets, so this costs nothing extra. */
+  .art-body code {
+    font-family: var(--font-mono); font-size: .88em;
+    background: var(--bg-code); border: 1px solid var(--line);
+    border-radius: 5px; padding: 1px 5px; color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .art-fig { margin-top: 26px; }
+  .art-fig pre {
+    margin: 0; padding: 16px 18px;
+    background: var(--bg-code); border: 1px solid var(--line); border-radius: var(--r-md);
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+  }
+  .art-fig pre code {
+    background: none; border: 0; padding: 0; border-radius: 0;
+    font-size: .855rem; line-height: 1.62; color: var(--text); white-space: pre;
+    overflow-wrap: normal;
+  }
+  .art-fig pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .art-fig figcaption { margin-top: 10px; font-size: var(--t-xs); color: var(--text-3); text-wrap: pretty; }
+
+  /* The one claim the whole piece turns on. */
+  .art-pull {
+    margin-top: 30px; padding: 20px 22px;
+    border-left: 3px solid var(--accent);
+    background: var(--bg-elev); border-radius: 0 var(--r-md) var(--r-md) 0;
+  }
+  .art-pull p { margin: 0; color: var(--text); font-size: 1.06rem; line-height: 1.6; }
+
+  .art-end {
+    margin-top: clamp(48px, 7vw, 72px); padding-top: 28px;
+    border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;
+  }
+  .art-end-note { font-size: var(--t-sm); color: var(--text-3); max-width: 42ch; text-wrap: pretty; }
+  .art-end .btn { flex: none; }
+
+  @media (max-width: 560px) {
+    .art-end { flex-direction: column; align-items: stretch; }
+    .art-end .btn { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#art" class="skip">Skip to content</a>
+<div class="progress" data-progress aria-hidden="true"></div>
+
+<main id="art">
+<article class="art">
+
+  <a class="art-back" href="/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+    Nikesh Walia
+  </a>
+
+  <header class="art-head">
+    <p class="art-kicker">Defect write up</p>
+    <h1>The lock worked. Two customers still bought the same unit.</h1>
+    <p class="art-standfirst">
+      A row lock that blocked exactly as documented, an ORM that helpfully handed back
+      the stale object anyway, and the reason a two thread test caught what a six
+      thread test missed.
+    </p>
+    <div class="art-meta">
+      <span><strong>Nikesh Walia</strong>, QA Engineer</span>
+      <span data-read-time>6 minute read</span>
+      <span>Found in <a href="https://github.com/NikeshWalia/shopsphere" target="_blank" rel="noopener noreferrer">ShopSphere</a></span>
+    </div>
+  </header>
+
+  <div class="art-body">
+
+    <p>
+      ShopSphere is an e-commerce application I built so that the test platform around
+      it would have something real to run against. Its checkout is the part I trust
+      least, because it is the part where two people can want the same thing at the
+      same moment. This is the bug that came out of it, and it is the most instructive
+      one I have found, because every individual piece of the system was behaving
+      correctly.
+    </p>
+
+    <h2>The symptom</h2>
+    <p>
+      One unit of a product in stock. Two customers checked out simultaneously. Both
+      received a <code>201&#160;Created</code>. Both were charged. Stock finished at zero.
+    </p>
+    <p>
+      That last detail is what made it slippery. An oversell usually announces itself
+      with a negative number, and a negative number is easy to alert on. Here the
+      final stock value was exactly what a correct run would have produced. Nothing in
+      the database looked wrong afterwards. The only evidence was two paid orders for
+      one item.
+    </p>
+
+    <h2>The obvious explanation was wrong</h2>
+    <p>
+      The checkout path already took a row lock before touching stock, a
+      <code>SELECT&#160;...&#160;FOR&#160;UPDATE</code> over the inventory rows in the basket. My first
+      assumption was the ordinary one: the lock was missing, or it was being taken
+      after the read instead of before it.
+    </p>
+    <p>
+      It was not. The lock was firing, and it was doing its job. The second transaction
+      genuinely blocked and genuinely waited until the first one committed. If you had
+      watched the two transactions in the database, you would have seen textbook
+      serialisation.
+    </p>
+
+    <div class="art-pull">
+      <p>
+        The lock was not the bug. The bug was one layer above the lock, in the object
+        the lock handed back.
+      </p>
+    </div>
+
+    <h2>What was actually happening</h2>
+    <p>
+      Checkout reads the inventory rows twice. Pricing the basket joins inventory to
+      work out what the customer owes, so by the time the locking query runs, those
+      same rows are already loaded into SQLAlchemy's session and sitting in its
+      identity map.
+    </p>
+    <p>
+      SQLAlchemy, by default, will not overwrite attributes it has already populated on
+      an object in the session. So the sequence went like this. The locking query
+      blocked, correctly. It waited for the other transaction, correctly. It read the
+      fresh row from the database, correctly. Then it looked at that row, recognised
+      the object it already had in memory, and returned the <strong>cached</strong> copy
+      instead.
+    </p>
+    <p>
+      Both transactions therefore serialised properly and then both read
+      <code>quantity&#160;==&#160;1</code> from their own private cache. Both passed validation.
+      Both wrote <code>quantity&#160;=&#160;0</code>. Both customers were charged. A textbook lost
+      update, produced by a lock that never once misbehaved.
+    </p>
+
+    <h2>The fix</h2>
+    <p>
+      One execution option.
+    </p>
+    <figure class="art-fig">
+<pre tabindex="0"><code>rows = (
+    db.execute(
+        select(Inventory)
+        .where(Inventory.product_id.in_(ordered_ids))
+        .order_by(Inventory.product_id)
+        .with_for_update()
+        .execution_options(populate_existing=True)
+    )
+    .scalars()
+    .all()
+)</code></pre>
+      <figcaption>From <code>backend/app/services/inventory.py</code>. Two details here are load bearing, and a concurrency test found both of them.</figcaption>
+    </figure>
+    <p>
+      <code>populate_existing=True</code> forces the attributes to be refreshed from the
+      locked row rather than served from the identity map. The second transaction now
+      sees the zero that the first one wrote, fails its stock check, and is correctly
+      refused.
+    </p>
+    <p>
+      The <code>order_by</code> on a sorted list of ids is the other load bearing detail,
+      and it is there for a different race. Two transactions that lock the same two rows
+      in opposite orders deadlock. Acquiring them in a globally consistent order means
+      the second transaction simply waits instead.
+    </p>
+
+    <h2>The test that proves it</h2>
+    <figure class="art-fig">
+<pre tabindex="0"><code>def test_the_last_unit_goes_to_exactly_one_of_two_buyers(
+    auth_client, admin_client: AdminClient, db: DatabaseQueries
+) -> None:
+    """The sharpest version of the race: two buyers, one unit.
+
+    Any locking bug shows up here as either two winners (oversold) or none
+    (a deadlock or a lost update).
+    """
+    product = admin_client.create_product_with_stock(1, price=99.00, name="The Last One")
+    shoppers = [build_shopper(auth_client, product["id"], 1) for _ in range(2)]
+
+    try:
+        responses = run_simultaneously([shopper.checkout for shopper in shoppers])
+        succeeded = [r for r in responses if r.status_code == 201]
+
+        assert len(succeeded) == 1, f"{len(succeeded)} buyers got the last unit; exactly one must"
+        assert db.stock_for(product["id"]) == 0
+    finally:
+        for shopper in shoppers:
+            shopper.client.close()</code></pre>
+      <figcaption>From <code>tests/integration/tests/test_concurrency.py</code>.</figcaption>
+    </figure>
+    <p>
+      The assertion is on the <strong>aggregate</strong> outcome, not on any one response.
+      Neither request is expected to win. What must be true is that exactly one of them
+      does, and that the database agrees afterwards. Asserting on a single response
+      would have made the test order dependent, and an order dependent concurrency test
+      is worse than no test at all.
+    </p>
+    <p>
+      Each shopper also carries its own HTTP client. That is not tidiness. If the threads
+      share a connection pool, the supposedly concurrent requests serialise inside the
+      HTTP library before they ever reach the server, and the test proves nothing while
+      passing cleanly.
+    </p>
+
+    <h2>Why two threads beat six</h2>
+    <p>
+      There is a six thread version of this race in the same file. It passed.
+    </p>
+    <p>
+      The two thread version failed on every single run.
+    </p>
+    <p>
+      More load is not more pressure. With six threads competing, the timing spread
+      widens, and something almost always serialises them by accident before they reach
+      the window where the bug lives. With exactly two, both transactions reliably get
+      to the read before either one commits, which is precisely the interval the lost
+      update needs. Sharpening the race mattered far more than widening it.
+    </p>
+
+    <div class="art-pull">
+      <p>
+        A concurrency bug that survives your load test is not rare. It is the normal
+        case. The load test is the thing that reassured everybody on the way to
+        production.
+      </p>
+    </div>
+
+    <h2>What I took from it</h2>
+    <ul>
+      <li>
+        <strong>A lock that fires is not a lock that works.</strong> Verify what the
+        query hands back, not merely that it blocked. Everything I could observe about
+        the lock itself was healthy.
+      </li>
+      <li>
+        <strong>Look one layer above the thing everyone inspects.</strong> The database
+        was right, the SQL was right, and the defect lived in the object mapper sitting
+        between them.
+      </li>
+      <li>
+        <strong>Design the race, do not just add threads.</strong> The sharpest version
+        of a race is usually the smallest one that still contends.
+      </li>
+      <li>
+        <strong>Assert on aggregates.</strong> In a concurrent test, no individual
+        participant has a predictable result. The invariant does.
+      </li>
+    </ul>
+
+    <p>
+      The suite that found this runs 916 tests across seven layers on every push. The
+      full breakdown, the other four defects it caught, and the code are all on the
+      main site.
+    </p>
+
+  </div>
+
+  <div class="art-end">
+    <p class="art-end-note">
+      I am a QA Engineer looking for automation and SDET roles. Everything I claim links
+      to code you can read.
+    </p>
+    <a class="btn btn--primary" href="/#work">
+      See the rest of the work
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+
+</article>
+</main>
+
+<script type="module" src="/js/article.js"></script>
+</body>
+</html>

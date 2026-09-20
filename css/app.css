@@ -1164,6 +1164,21 @@ kbd {
   max-width: 100%;
   transition: border-color var(--d-fast) var(--e-inout), background var(--d-fast) var(--e-inout);
 }
+/* The one defect with a long-form write up behind it. Deliberately not a
+   .defect-link pill: that shape means "here is the test", and this means
+   "here is the reasoning", so it should not look interchangeable. */
+.defect-write {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: var(--s-3); margin-left: var(--s-3);
+  font-size: var(--t-xs); font-weight: 500;
+  color: var(--accent-text); text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--d-fast) var(--e-inout);
+}
+.defect-write svg { width: 13px; height: 13px; flex: none; }
+.defect-write:hover { border-bottom-color: var(--accent-text); }
+@media (max-width: 560px) { .defect-write { margin-left: 0; } }
+
 .defect-link code {
   font-family: var(--font-mono);
   font-size: var(--t-micro);
@@ -1471,6 +1486,12 @@ kbd {
   border-top: 1px solid var(--text);
 }
 .cap {
+  /* Column flex so the evidence line's margin-top:auto has something to push
+     against: grid items stretch to the row height, and without this the
+     dashed rule sits directly under the chips, landing at a different height
+     in each card of a row. */
+  display: flex;
+  flex-direction: column;
   padding: var(--s-6) 0;
   border-bottom: 1px solid var(--line);
   background: none;
@@ -1773,6 +1794,31 @@ kbd {
 [data-reveal='right'] { transform: translate3d(calc(var(--rise) * -0.6), 0, 0); }
 [data-reveal='left']  { transform: translate3d(calc(var(--rise) * 0.6), 0, 0); }
 [data-reveal='in']    { transform: scale(.97); }
+
+/* Above-the-fold entrance, driven by CSS alone.
+   The hero is always in view on load, so observing it buys nothing and costs
+   everything: while ui.js was still parsing on a throttled phone, the lede
+   sat at opacity 0 and LCP waited for it. These animate from the moment the
+   stylesheet applies, which puts LCP back next to FCP. Same curve, same
+   stagger and same distance as the observed reveals, so the hero and the
+   sections below it move identically. */
+[data-reveal-now] {
+  animation: reveal-now var(--d-slow) var(--e-out) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger));
+}
+@keyframes reveal-now {
+  /* 0.02 rather than 0: Chrome will not accept an element as an LCP candidate
+     while it is fully transparent, so a hero that fades from 0 is invisible to
+     the metric until something else forces a re-evaluation. Here that was the
+     typewriter's first tick at ~3.9s, which is where mobile LCP was landing.
+     Two percent is indistinguishable from nothing and keeps the element
+     eligible from the first frame. */
+  from { opacity: .02; transform: translate3d(0, var(--rise), 0); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal-now] { animation: none; }
+}
 
 [data-reveal][data-shown='true'] {
   opacity: 1;
@@ -2422,9 +2468,32 @@ kbd {
 .side-foot { margin-top: auto; padding-top: var(--s-8); }
 .side-cv { width: 100%; }
 .side-tools {
-  display: flex; align-items: center; justify-content: center; gap: var(--s-2);
+  display: grid; gap: var(--s-2); justify-items: center;
   margin-top: var(--s-4);
 }
+/* Full width, because the rail has 300px and a 34px magnifier was using 34
+   of them to communicate nothing. */
+.side-search {
+  display: flex; align-items: center; gap: var(--s-2);
+  width: 100%; padding: 9px 12px;
+  border: 1px solid var(--rail-line); border-radius: var(--r-sm);
+  background: transparent; color: var(--rail-mute);
+  font: inherit; font-size: var(--t-sm); text-align: left; cursor: pointer;
+  transition: background 140ms var(--e-out), color 140ms var(--e-out), border-color 140ms var(--e-out);
+}
+.side-search svg { width: 16px; height: 16px; flex: none; }
+.side-search-t { flex: 1 1 auto; }
+.side-search-k {
+  flex: none; display: inline-flex; gap: 3px;
+  padding: 2px 6px; border-radius: 5px;
+  border: 1px solid var(--rail-line); background: var(--rail-bg-2);
+  font-family: var(--font-mono); font-size: 11px; line-height: 1.5; color: var(--rail-mute);
+}
+.side-search:hover { background: var(--rail-bg-2); color: var(--rail-text); border-color: var(--rail-mute); }
+.side-search:hover .side-search-k { color: var(--rail-text); }
+.side-search:focus-visible { outline: 2px solid var(--rail-accent); outline-offset: 2px; }
+/* No physical keyboard, no shortcut to advertise. */
+@media (pointer: coarse) { .side-search-k { display: none; } }
 .side-tools .icon-btn { border: 1px solid var(--rail-line); color: var(--rail-mute); }
 .side-tools .icon-btn:hover { background: var(--rail-bg-2); color: var(--rail-text); }
 .side-tools .theme-switch { background: var(--rail-bg-2); border-color: var(--rail-line); }

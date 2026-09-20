@@ -86,6 +86,14 @@ export function init() {
       run: () => window.open(r.url, '_blank', 'noopener'),
     }));
 
+    // Long-form writing. Same-origin, so it navigates rather than opening a
+    // tab: a reader who searched for it wants to land on it, not collect it.
+    const writing = [
+      { group: 'Writing', icon: 'file', title: 'The lock worked. Two customers still bought the same unit.',
+        sub: 'Defect write up · oversell race, SQLAlchemy identity map',
+        run: () => { location.href = '/writing/oversell-race/'; } },
+    ];
+
     const actions = [
       { group: 'Actions', icon: 'file',  title: 'Download resume (PDF)', sub: 'Nikesh_Walia_CV.pdf', run: download },
       { group: 'Actions', icon: 'mail',  title: 'Send an email',         sub: 'nikeshwalia@gmail.com', run: () => { location.href = 'mailto:nikeshwalia@gmail.com'; } },
@@ -94,7 +102,7 @@ export function init() {
       { group: 'Actions', icon: 'theme', title: 'Cycle theme',           sub: 'light → dark → system', run: () => toast(`Theme: ${theme.cycle()}`) },
     ];
 
-    items = [...nav, ...cases, ...repos, ...caps, ...actions];
+    items = [...nav, ...cases, ...repos, ...caps, ...writing, ...actions];
   }
 
   function go(hash) {
